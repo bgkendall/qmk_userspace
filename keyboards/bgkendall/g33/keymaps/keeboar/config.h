@@ -7,6 +7,6 @@
 #define VIAL_UNLOCK_COMBO_ROWS { 0, 1 } // Top left and right corners
 #define VIAL_UNLOCK_COMBO_COLS { 0, 3 }
 
-#ifndef KEYBOARD_handwired_bgkendall_gherkin_3_keeboar
+#ifndef KEYBOARD_bgkendall_gherkin_3_keeboar
   #pragma warning("Incompatible keyboard and keymap")
 #endif
