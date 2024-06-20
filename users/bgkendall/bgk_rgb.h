@@ -22,7 +22,7 @@
 #define BGKRGB_HSV_MAC_TO_QMK(h,s,v) BGKRGB_DEGREES_TO_INT(h),\
                                      BGKRGB_PERCENT_TO_INT(s),\
                                      BGKRGB_PCNT_OF_MAX_VALUE(v)
-#define BGKRGB_RAINBOW_PIXEL(p)     { p, 1, ((255UL/RGBLED_NUM) *  p), 255, 255 }
+#define BGKRGB_RAINBOW_PIXEL(p)     { p, 1, ((255UL/RGBLIGHT_LED_COUNT) *  p), 255, 255 }
 
 #define HSV_1PASSWORD           BGKRGB_HSV_MAC_TO_QMK(209,  0,100)
 #define HSV_MS_EXCEL            BGKRGB_HSV_MAC_TO_QMK(148, 84, 50)
@@ -37,7 +37,7 @@
 #define HSV_TOGGLE_TOGGL        BGKRGB_HSV_MAC_TO_QMK(358, 94, 86)
 
 
-#define BGKRGB_ALL(c) RGBLIGHT_LAYER_SEGMENTS( {0, RGBLED_NUM, c} )
+#define BGKRGB_ALL(c) RGBLIGHT_LAYER_SEGMENTS( {0, RGBLIGHT_LED_COUNT, c} )
 
 extern const rgblight_segment_t PROGMEM bgkrgb_black_layer[];
 extern const rgblight_segment_t PROGMEM bgkrgb_white_layer[];
@@ -85,7 +85,7 @@ extern const rgblight_segment_t PROGMEM bgkrgb_vividpink_layer[];
     // If RGBLIGHT_INDICATOR has not been defined, create indicator layers with the first and last
     // LED.
 
-    #define BGKRGB_INDICATOR(c) RGBLIGHT_LAYER_SEGMENTS ( {0, 1, c}, {RGBLED_NUM-1, 1, c} )
+    #define BGKRGB_INDICATOR(c) RGBLIGHT_LAYER_SEGMENTS ( {0, 1, c}, {RGBLIGHT_LED_COUNT-1, 1, c} )
 
 #endif /* RGBLIGHT_INDICATOR */
 #endif /* BGKRGB_INDICATOR */
