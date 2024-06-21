@@ -1,0 +1,17 @@
+{
+    "usb": {
+        "device_version": "4.0.0"
+    },
+    "encoder": {
+        "rotary": [
+            { "pin_a": "GP3", "pin_b": "GP5" }
+        ]
+    },
+    "matrix_pins": {
+        "rows": ["GP14", "GP26", "GP27", "GP28", "GP0", "NO_PIN"],
+        "cols": ["GP7", "GP11", "GP10", "GP15", "GP23", "GP22", "GP21", "GP20", "GP19", "GP18", "GP17", "GP16"]
+    },
+    "ws2812": {
+        "pin": "GP8"
+    }
+}

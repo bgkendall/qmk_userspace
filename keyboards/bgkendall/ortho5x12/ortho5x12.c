@@ -27,12 +27,12 @@ const rgblight_segment_t PROGMEM ortho_5_12_ok_layer[] = RGBLIGHT_LAYER_SEGMENTS
 
 const rgblight_segment_t PROGMEM ortho_5_12_capsword_layer[] = RGBLIGHT_LAYER_SEGMENTS
 (
-    {0, 1, HSV_VIVIDPINK}, {RGBLED_NUM-1, 1, HSV_VIVIDPINK}
+    {0, 1, HSV_VIVIDPINK}, {RGBLIGHT_LED_COUNT-1, 1, HSV_VIVIDPINK}
 );
 
 const rgblight_segment_t PROGMEM ortho_5_12_capslock_layer[] = RGBLIGHT_LAYER_SEGMENTS
 (
-    {0, 1, HSV_RED}, {RGBLED_NUM-1, 1, HSV_RED}
+    {0, 1, HSV_RED}, {RGBLIGHT_LED_COUNT-1, 1, HSV_RED}
 );
 
 #ifndef KEYBOARD_handwired_bgkendall_ortho5x12_rev2m
@@ -502,6 +502,11 @@ void keyboard_post_init_kb(void)
 
     // Flash OK layer:
     rgblight_blink_layer(RGBL_OK, 800);
+#endif
+
+#ifdef ENCODER_GROUND_PIN
+    setPinOutput(ENCODER_GROUND_PIN);
+    writePinLow(ENCODER_GROUND_PIN);
 #endif
 }
 

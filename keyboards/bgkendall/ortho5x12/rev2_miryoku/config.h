@@ -14,7 +14,7 @@
 #define ENCODERS_PAD_A { C7 }
 #define ENCODERS_PAD_B { F1 }
 
-#define RGB_DI_PIN F5
+#define WS2812_DI_PIN F5
 
 #define BGKRGB_INDICATOR(c) RGBLIGHT_LAYER_SEGMENTS ( {3, 1, c}, {RGBLED_NUM-3, 1, c} )
 

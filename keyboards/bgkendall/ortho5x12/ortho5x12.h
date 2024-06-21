@@ -2,17 +2,20 @@
 
 #include "quantum.h"
 
-#ifdef KEYBOARD_handwired_bgkendall_ortho5x12_rev1
+#ifdef KEYBOARD_bgkendall_ortho5x12_rev1
   #include "rev1.h"
 #endif
-#ifdef KEYBOARD_handwired_bgkendall_ortho5x12_rev2
+#ifdef KEYBOARD_bgkendall_ortho5x12_rev2
   #include "rev2.h"
 #endif
-#ifdef KEYBOARD_handwired_bgkendall_ortho5x12_rev2_miryoku
+#ifdef KEYBOARD_bgkendall_ortho5x12_rev2_miryoku
   #include "rev2_miryoku.h"
 #endif
-#ifdef KEYBOARD_handwired_bgkendall_ortho5x12_rev3
+#ifdef KEYBOARD_bgkendall_ortho5x12_rev3
   #include "rev3.h"
+#endif
+#ifdef KEYBOARD_bgkendall_ortho5x12_rev4
+  #include "rev4.h"
 #endif
 
 #include "users/bgkendall/bgk_keycodes.h"

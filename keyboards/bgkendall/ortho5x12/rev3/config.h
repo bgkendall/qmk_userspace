@@ -11,4 +11,4 @@
 #define ENCODERS_PAD_A { GP12 }
 #define ENCODERS_PAD_B { GP13 }
 
-#define RGB_DI_PIN GP28
+#define WS2812_DI_PIN GP28

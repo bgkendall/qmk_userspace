@@ -1,9 +1,5 @@
 #pragma once
 
-/* USB Device descriptor parameter */
-#define PRODUCT_ID      0x005C  // "5.12"
-#define PRODUCT         Ortho 5x12
-
 /* key matrix size */
 #define MATRIX_ROWS 6
 #define MATRIX_COLS 12
@@ -41,11 +37,6 @@
 //#define IGNORE_MOD_TAP_INTERRUPT
 //#define PERMISSIVE_HOLD_PER_KEY
 
-#define DOUBLE_TAP_SHIFT_TURNS_ON_CAPS_WORD
-
-/* Number of taps before a tap-toggle layer locks */
-#define TAPPING_TOGGLE 2
-
 #define TAPPING_TERM 200
 
 /* declare low power usage for iOS */
@@ -64,7 +55,7 @@
 #   define RGBLIGHT_EFFECT_ALTERNATING
 #   define RGBLIGHT_EFFECT_TWINKLE
 #endif
-#define RGBLED_NUM 12
+#define RGBLIGHT_LED_COUNT 12
 #define RGBLIGHT_HUE_STEP 2
 #define RGBLIGHT_SAT_STEP 8
 #define RGBLIGHT_VAL_STEP 8

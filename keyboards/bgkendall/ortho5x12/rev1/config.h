@@ -11,4 +11,4 @@
 #define ENCODERS_PAD_A { D5 }                                               // TxLED
 #define ENCODERS_PAD_B { B0 }                                               // RxLED
 
-#define RGB_DI_PIN B4                                                       // 8
+#define WS2812_DI_PIN B4                                                       // 8
