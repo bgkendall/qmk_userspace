@@ -128,7 +128,7 @@ void encoder_action_unregister(void)
 void matrix_scan_user(void)
 {
     encoder_action_unregister();
-    bgkey_unregister_command_for_tab(false);
+    bgkey_unregister_app_switch_modifier(false);
 }
 
 bool encoder_update_user(uint8_t index, bool clockwise)

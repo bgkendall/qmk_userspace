@@ -69,12 +69,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
                 }
                 case BK_APP_BACKWARD:
                 {
-                    process = bgkey_register_backward_command_tab();
+                    process = bgkey_register_backward_app_switch();
                     break;
                 }
                 case BK_APP_FORWARD:
                 {
-                    process = bgkey_register_forward_command_tab();
+                    process = bgkey_register_forward_app_switch();
                     break;
                 }
                 case BK_TIMES:

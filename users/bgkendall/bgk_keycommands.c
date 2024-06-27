@@ -14,9 +14,9 @@
 // Global variables and functions for Cmd+Tab via encoder or other non-standard mechanism.
 // Adapted from https://docs.splitkb.com/hc/en-us/articles/360010513760
 //
-const uint16_t bgkey_command_tab_hold_time = 800; // ms
-bool bgkey_is_command_tab_active = false;
-uint16_t bgkey_command_tab_timer = 0;
+const uint16_t bgkey_app_switch_mod_hold_time = 800; // ms
+bool bgkey_app_switch_mod_active = false;
+uint16_t bgkey_app_switch_mod_timer = 0;
 
 
 bool is_windows(void)
@@ -36,12 +36,11 @@ bool is_windows(void)
     }
 }
 
-void bgkey_register_command_for_tab(void)
+void bgkey_register_app_switch_modifier(void)
 {
-    if (!bgkey_is_command_tab_active)
+    if (!bgkey_app_switch_mod_active)
     {
         // Register Command for Cmd+Tab handling:
-        bgkey_is_command_tab_active = true;
         if (is_windows())
         {
             register_code(KC_LALT);
@@ -50,18 +49,19 @@ void bgkey_register_command_for_tab(void)
         {
             register_code(KC_LCMD);
         }
+        bgkey_app_switch_mod_active = true;
     }
-    bgkey_command_tab_timer = timer_read();
+    bgkey_app_switch_mod_timer = timer_read();
 }
 
-bool bgkey_unregister_command_for_tab(bool immediate)
+bool bgkey_unregister_app_switch_modifier(bool immediate)
 {
-    if (bgkey_is_command_tab_active)
+    if (bgkey_app_switch_mod_active)
     {
         // Unregister Command after Cmd+Tab times out:
-        if (immediate || timer_elapsed(bgkey_command_tab_timer) > bgkey_command_tab_hold_time)
+        if (immediate || timer_elapsed(bgkey_app_switch_mod_timer) > bgkey_app_switch_mod_hold_time)
         {
-            bgkey_is_command_tab_active = false;
+            bgkey_app_switch_mod_active = false;
             if (is_windows())
             {
                 unregister_code(KC_LALT);
@@ -76,31 +76,24 @@ bool bgkey_unregister_command_for_tab(bool immediate)
     return false;
 }
 
-bool bgkey_register_forward_command_tab(void)
+bool bgkey_register_forward_app_switch(void)
 {
-    bgkey_register_command_for_tab();
-    if (is_windows())
-    {
-        tap_code16(KC_TAB);
-    }
-    else
-    {
-        tap_code16(BGKEY_FORWARD_TAB);
-    }
+    bgkey_register_app_switch_modifier();
+    tap_code16(KC_TAB);
 
     return false;
 }
 
-bool bgkey_register_backward_command_tab(void)
+bool bgkey_register_backward_app_switch(void)
 {
-    bgkey_register_command_for_tab();
+    bgkey_register_app_switch_modifier();
     if (is_windows())
     {
         tap_code16(S(KC_TAB));
     }
     else
     {
-        tap_code16(BGKEY_BACKWARD_TAB);
+        tap_code16(KC_GRAVE);
     }
 
     return false;
@@ -110,7 +103,7 @@ layer_state_t layer_state_set_user(layer_state_t state)
 {
     if (state == 0)
     {
-        bgkey_unregister_command_for_tab(true);
+        bgkey_unregister_app_switch_modifier(true);
     }
 
     return state;

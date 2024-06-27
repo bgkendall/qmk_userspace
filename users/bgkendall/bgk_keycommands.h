@@ -20,10 +20,10 @@
 #   define BGKEY_BACKWARD_TAB KC_GRAVE
 #endif
 
-void bgkey_register_command_for_tab(void);
+void bgkey_register_app_switch_modifier(void);
 
-bool bgkey_unregister_command_for_tab(bool immediate);
+bool bgkey_unregister_app_switch_modifier(bool immediate);
 
-bool bgkey_register_forward_command_tab(void);
+bool bgkey_register_forward_app_switch(void);
 
-bool bgkey_register_backward_command_tab(void);
+bool bgkey_register_backward_app_switch(void);
