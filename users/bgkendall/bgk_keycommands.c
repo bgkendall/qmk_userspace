@@ -18,13 +18,38 @@ const uint16_t bgkey_command_tab_hold_time = 800; // ms
 bool bgkey_is_command_tab_active = false;
 uint16_t bgkey_command_tab_timer = 0;
 
+
+bool is_windows(void)
+{
+// #ifdef OS_DETECTION_ENABLE
+//     return (detected_host_os() == OS_LINUX ||
+//             detected_host_os() == OS_WINDOWS);
+// #else
+//     return false;
+// #endif
+    if (keymap_config.swap_lctl_lgui)
+    {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 void bgkey_register_command_for_tab(void)
 {
     if (!bgkey_is_command_tab_active)
     {
         // Register Command for Cmd+Tab handling:
         bgkey_is_command_tab_active = true;
-        register_code(KC_LCMD);
+        if (is_windows())
+        {
+            register_code(KC_LALT);
+        }
+        else
+        {
+            register_code(KC_LCMD);
+        }
     }
     bgkey_command_tab_timer = timer_read();
 }
@@ -37,7 +62,14 @@ bool bgkey_unregister_command_for_tab(bool immediate)
         if (immediate || timer_elapsed(bgkey_command_tab_timer) > bgkey_command_tab_hold_time)
         {
             bgkey_is_command_tab_active = false;
-            unregister_code(KC_LCMD);
+            if (is_windows())
+            {
+                unregister_code(KC_LALT);
+            }
+            else
+            {
+                unregister_code(KC_LCMD);
+            }
         }
     }
 
@@ -47,7 +79,14 @@ bool bgkey_unregister_command_for_tab(bool immediate)
 bool bgkey_register_forward_command_tab(void)
 {
     bgkey_register_command_for_tab();
-    tap_code16(BGKEY_FORWARD_TAB);
+    if (is_windows())
+    {
+        tap_code16(KC_TAB);
+    }
+    else
+    {
+        tap_code16(BGKEY_FORWARD_TAB);
+    }
 
     return false;
 }
@@ -55,7 +94,14 @@ bool bgkey_register_forward_command_tab(void)
 bool bgkey_register_backward_command_tab(void)
 {
     bgkey_register_command_for_tab();
-    tap_code16(BGKEY_BACKWARD_TAB);
+    if (is_windows())
+    {
+        tap_code16(S(KC_TAB));
+    }
+    else
+    {
+        tap_code16(BGKEY_BACKWARD_TAB);
+    }
 
     return false;
 }
