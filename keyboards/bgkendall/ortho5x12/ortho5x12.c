@@ -1,4 +1,4 @@
-#include "ortho5x12.h"
+#include QMK_KEYBOARD_H
 
 
 #ifdef CONSOLE_ENABLE
