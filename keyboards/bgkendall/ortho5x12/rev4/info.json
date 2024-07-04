@@ -4,7 +4,7 @@
     "board": "GENERIC_RP_RP2040",
     "encoder": {
         "rotary": [
-            { "pin_a": "GP3", "pin_b": "GP5" }
+            { "pin_a": "GP5", "pin_b": "GP7" }
         ]
     },
     "usb": {
@@ -16,7 +16,7 @@
     },
     "matrix_pins": {
         "rows": ["GP14", "GP26", "GP27", "GP28", "GP0"],
-        "cols": ["GP11", "GP10", "GP1", "GP15", "GP23", "GP24", "GP22", "GP21", "GP20", "GP19", "GP18", "GP17", "GP16"]
+        "cols": ["GP11", "GP10", "GP1", "GP15", "GP23", "GP19", "GP18", "GP17", "GP16", "GP24", "GP22", "GP21", "GP20"]
     },
     "layouts": {
       "LAYOUT": {
