@@ -22,20 +22,37 @@ const rgblight_segment_t PROGMEM ortho_5_12_ok_layer[] = RGBLIGHT_LAYER_SEGMENTS
     BGKRGB_RAINBOW_PIXEL(7),
     BGKRGB_RAINBOW_PIXEL(8),
     BGKRGB_RAINBOW_PIXEL(9),
-    BGKRGB_RAINBOW_PIXEL(10)
+    BGKRGB_RAINBOW_PIXEL(10),
+    BGKRGB_RAINBOW_PIXEL(11)
 );
 
-const rgblight_segment_t PROGMEM ortho_5_12_capsword_layer[] = RGBLIGHT_LAYER_SEGMENTS
-(
-    {0, 1, HSV_VIVIDPINK}, {RGBLIGHT_LED_COUNT-1, 1, HSV_VIVIDPINK}
-);
+#ifndef KEYBOARD_bgkendall_ortho5x12_rev2m
 
-const rgblight_segment_t PROGMEM ortho_5_12_capslock_layer[] = RGBLIGHT_LAYER_SEGMENTS
-(
-    {0, 1, HSV_RED}, {RGBLIGHT_LED_COUNT-1, 1, HSV_RED}
-);
-
-#ifndef KEYBOARD_handwired_bgkendall_ortho5x12_rev2m
+enum RGB_LAYERS
+{
+    RGBL_A = 0,
+    RGBL_B,
+    RGBL_C,
+    RGBL_D,
+    RGBL_E,
+    RGBL_F,
+    RGBL_G,
+    RGBL_H,
+    RGBL_I,
+    RGBL_J,
+    RGBL_K,
+    RGBL_L,
+    RGBL_M,
+    RGBL_N,
+    RGBL_O,
+    RGBL_P,
+    RGBL_Q,
+    RGBL_R,
+    RGBL_S,
+    RGBL_CAPSWORD,
+    RGBL_CAPSLOCK,
+    RGBL_OK
+};
 
 const rgblight_segment_t* const PROGMEM ortho_5_12_rgb_layers[] = RGBLIGHT_LAYERS_LIST
 (
@@ -59,21 +76,14 @@ const rgblight_segment_t* const PROGMEM ortho_5_12_rgb_layers[] = RGBLIGHT_LAYER
     [RGBL_M] = bgkrgb_magenta_indicator_layer,
     [RGBL_P] = bgkrgb_pink_indicator_layer,
 
-    [RGBL_OK]       = ortho_5_12_ok_layer,
-    [RGBL_CAPSWORD] = ortho_5_12_capsword_layer,
-    [RGBL_CAPSLOCK] = ortho_5_12_capslock_layer
+    [RGBL_CAPSWORD] = bgkrgb_vividpink_indicator_layer,
+    [RGBL_CAPSLOCK] = bgkrgb_red_indicator_layer,
+    [RGBL_OK]       = bgkrgb_green_layer
 );
 
 uint8_t get_rgb_layer(layer_state_t state)
 {
     return (uint8_t)(keymap_key_to_keycode(get_highest_layer(state), (keypos_t)RGBLIGHT_LAYER_KEY) - KC_A);
-}
-
-layer_state_t default_layer_state_set_kb(layer_state_t state)
-{
-    rgblight_blink_layer(get_highest_layer(state), BGKRGB_BLINK_TIME);
-
-    return default_layer_state_set_user(state);
 }
 
 layer_state_t layer_state_set_kb(layer_state_t state)
@@ -92,7 +102,15 @@ layer_state_t layer_state_set_kb(layer_state_t state)
     return layer_state_set_user(state);
 }
 
-bool led_update_user(led_t led_state)
+layer_state_t default_layer_state_set_kb(layer_state_t state)
+{
+    rgblight_blink_layer(get_highest_layer(state), BGKRGB_BLINK_TIME);
+
+    return default_layer_state_set_user(state);
+}
+
+
+bool led_update_kb(led_t led_state)
 {
     rgblight_set_layer_state(RGBL_CAPSLOCK, led_state.caps_lock);
 
@@ -104,8 +122,7 @@ void caps_word_set_user(bool active)
     rgblight_set_layer_state(RGBL_CAPSWORD, active);
 }
 
-#endif // ¬KEYBOARD_handwired_bgkendall_ortho5x12_rev2m
-
+#endif // ¬KEYBOARD_bgkendall_ortho5x12_rev2m
 
 #endif // RGBLIGHT_LAYERS
 
@@ -281,7 +298,7 @@ bool flush_modifiers(bool key_down, void* context)
 }
 
 const key_override_t override_cmd_esc_grave = {
-#ifdef KEYBOARD_handwired_bgkendall_ortho5x12_rev2m
+#ifdef KEYBOARD_bgkendall_ortho5x12_rev2m
     .trigger            = LT(U_MEDIA,KC_ESC),
 #else
     .trigger            = KC_ESC,
@@ -295,7 +312,7 @@ const key_override_t override_cmd_esc_grave = {
     .enabled            = NULL
 };
 const key_override_t override_alt_esc_stab = {
-#ifdef KEYBOARD_handwired_bgkendall_ortho5x12_rev2m
+#ifdef KEYBOARD_bgkendall_ortho5x12_rev2m
     .trigger            = LT(U_MEDIA,KC_ESC),
 #else
     .trigger            = KC_ESC,
@@ -309,7 +326,7 @@ const key_override_t override_alt_esc_stab = {
     .enabled            = NULL
 };
 const key_override_t override_ctl_esc_grave = {
-#ifdef KEYBOARD_handwired_bgkendall_ortho5x12_rev2m
+#ifdef KEYBOARD_bgkendall_ortho5x12_rev2m
     .trigger            = LT(U_MEDIA,KC_ESC),
 #else
     .trigger            = KC_ESC,
@@ -325,7 +342,7 @@ const key_override_t override_ctl_esc_grave = {
 const key_override_t override_sft_esc_tilde = ko_make_basic(MOD_MASK_SHIFT, KC_ESC, S(KC_GRAVE));
 
 const key_override_t override_backspace_delete = {
-#ifdef KEYBOARD_handwired_bgkendall_ortho5x12_rev2m
+#ifdef KEYBOARD_bgkendall_ortho5x12_rev2m
     .trigger            = LT(U_SYM,KC_BSPC),
 #else
     .trigger            = KC_BSPC,
@@ -433,7 +450,7 @@ const key_override_t** key_overrides = (const key_override_t *[])
     &override_ctl_esc_grave,
     &override_sft_esc_tilde,
     &override_backspace_delete,
-#ifdef KEYBOARD_handwired_bgkendall_ortho5x12_rev2m
+#ifdef KEYBOARD_bgkendall_ortho5x12_rev2m
     &override_comma_semi,
     &override_dot_colon,
     &override_comma_paren,
@@ -442,7 +459,7 @@ const key_override_t** key_overrides = (const key_override_t *[])
     &override_dot_angle,
     &override_comma_brace,
     &override_dot_brace,
-#endif // KEYBOARD_handwired_bgkendall_ortho5x12_rev2m
+#endif // KEYBOARD_bgkendall_ortho5x12_rev2m
     NULL // Terminate the array of overrides
 };
 
@@ -451,14 +468,14 @@ const key_override_t** key_overrides = (const key_override_t *[])
 #endif // ¬VIAL_ENABLE
 
 
-#ifndef KEYBOARD_handwired_bgkendall_ortho5x12_rev2m
+#ifndef KEYBOARD_bgkendall_ortho5x12_rev2m
 
 void keyboard_post_init_kb(void)
 {
 #ifdef CONSOLE_ENABLE
     // Enable/disable debugging:
     debug_enable = true;
-    //debug_matrix = true;
+    debug_matrix = true;
 #endif
 
 #ifdef RGBLIGHT_LAYERS
@@ -478,4 +495,4 @@ void keyboard_post_init_kb(void)
 #endif
 }
 
-#endif // ¬KEYBOARD_handwired_bgkendall_ortho5x12_rev2m
+#endif // ¬KEYBOARD_bgkendall_ortho5x12_rev2m

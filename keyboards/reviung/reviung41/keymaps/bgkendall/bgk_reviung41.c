@@ -124,8 +124,6 @@ layer_state_t layer_state_set_kb(layer_state_t state)
     return layer_state_set_user(state);
 }
 
-
-
 layer_state_t default_layer_state_set_kb(layer_state_t new_state)
 {
     // rgblight_blink_layer(get_highest_layer(new_state), BGKRGB_BLINK_TIME);

@@ -36,6 +36,12 @@
         "saturation_steps": 17,
         "brightness_steps": 17,
         "sleep": true,
+        "layers": {
+            "blink": true,
+            "enabled": true,
+            "max": 25,
+            "override_rgb": true
+        },
         "animations": {
             "alternating": true,
             "breathing": true,
