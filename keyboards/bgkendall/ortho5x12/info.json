@@ -13,7 +13,7 @@
         "bootmagic_lite": true,
         "combo": true,
         "command": false,
-        "console": false,
+        "console": true,
         "encoder": true,
         "encoder_map": true,
         "extrakey": true,

@@ -6,6 +6,100 @@
 #endif
 
 
+#define MAX_COUNTED_KEY (KC_F13 + 1)
+#define COUNT_SLOTS (MAX_COUNTED_KEY*4)
+#define PRINT_EVERY_N_KEYSTROKES 4
+#define COUNTS_PER_LINE 35
+
+extern uint8_t extract_mod_bits(uint16_t code);
+
+uint16_t key_counter[] = { [0 ... (COUNT_SLOTS-1)] = 0 };
+
+bool process_record_keymap(uint16_t keycode, keyrecord_t* record)
+{
+    if (record->event.pressed)
+    {
+        static uint16_t counter = 0;
+
+        int16_t base_keycode = keycode;
+
+        if (IS_QK_MODS(keycode)    ||
+            IS_QK_MOD_TAP(keycode) ||
+            IS_QK_LAYER_TAP(keycode))
+        {
+            base_keycode &= QK_BASIC_MAX;
+        }
+
+        if (base_keycode < MAX_COUNTED_KEY)
+        {
+            const uint8_t modifiers = get_mods();
+
+            if ((modifiers & MOD_MASK_ALT) || (extract_mod_bits(keycode) & MOD_MASK_ALT))
+            {
+                key_counter[base_keycode + (MAX_COUNTED_KEY*3)]++;
+            }
+            else if ((modifiers & MOD_MASK_CTRL) || (extract_mod_bits(keycode) & MOD_MASK_CTRL) ||
+                     (modifiers & MOD_MASK_GUI)  || (extract_mod_bits(keycode) & MOD_MASK_GUI))
+            {
+                key_counter[base_keycode + (MAX_COUNTED_KEY*2)]++;
+            }
+            else if ((modifiers & MOD_MASK_SHIFT) || (extract_mod_bits(keycode) & MOD_MASK_SHIFT))
+            {
+                key_counter[base_keycode + MAX_COUNTED_KEY]++;
+            }
+            else
+            {
+                key_counter[base_keycode]++;
+            }
+
+            if (counter % PRINT_EVERY_N_KEYSTROKES == 0)
+            {
+                char s[] = { [0 ... 256] = '\0' };
+
+                uint16_t key_start = ((counter/PRINT_EVERY_N_KEYSTROKES) * COUNTS_PER_LINE);
+
+                // printf("%i, %i, %i, %i, %i, %i\n", counter, key_start, (key_start + COUNTS_PER_LINE), (((key_start/MAX_COUNTED_KEY)+1) * MAX_COUNTED_KEY), MAX_COUNTED_KEY, COUNT_SLOTS);
+
+                for (uint16_t i = key_start; i < (key_start + COUNTS_PER_LINE) &&
+                                             i < (((key_start/MAX_COUNTED_KEY)+1) * MAX_COUNTED_KEY) &&
+                                             i < COUNT_SLOTS; i++)
+                {
+                    if (i == key_start)
+                    {
+                        if (i >= MAX_COUNTED_KEY*3)
+                        {
+                            sprintf(s, "!"); // Alt/Option
+                        }
+                        else if (i >= MAX_COUNTED_KEY*2)
+                        {
+                            sprintf(s, "^"); // Control & GUI/Command
+                        }
+                        else if (i >= MAX_COUNTED_KEY)
+                        {
+                            sprintf(s, "+"); // Shift
+                        }
+                    }
+                    sprintf(s, "%s,%02X=%i", s, (i % MAX_COUNTED_KEY), key_counter[i]);
+                }
+
+                if (s[0] != '\0')
+                {
+                    printf("%s\n", s);
+                }
+            }
+
+            counter++;
+            if (counter > PRINT_EVERY_N_KEYSTROKES * 16)
+            {
+                counter = 0;
+                print("\n====\n");
+            }
+        }
+    }
+
+    return true;
+}
+
 #ifdef RGBLIGHT_LAYERS
 
 #include "users/bgkendall/bgk_rgb.h"
@@ -475,7 +569,7 @@ void keyboard_post_init_kb(void)
 #ifdef CONSOLE_ENABLE
     // Enable/disable debugging:
     debug_enable = true;
-    debug_matrix = true;
+    debug_matrix = false;
 #endif
 
 #ifdef RGBLIGHT_LAYERS
