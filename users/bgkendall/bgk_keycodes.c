@@ -35,6 +35,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
         {
             switch (keycode)
             {
+                case BK_000:
+                {
+                    // Thousands (000) key
+                    //
+                    tap_code(KC_P0);
+                    tap_code(KC_P0);
+                    tap_code(KC_P0);
+                    process = false;
+                    break;
+                }
                 case BK_BGK:
                 {
                     clear_mods();
@@ -132,26 +142,53 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
                     cursor_vertical = !cursor_vertical;
                     process = false;
                     break;
-                default:
-                    break;
-            }
-        }
-
-        if (process)
-        {
-            switch (keycode)
-            {
-                case BK_000:
+                case BK_THORN:
                 {
-                    // Thousands (000) key
+                    // “Th” key
                     //
-                    if (record->event.pressed)
+                    const bool capsWordOn =
+#ifdef CAPS_WORD_ENABLE
+                                            is_caps_word_on();
+#else
+                                            false;
+#endif
+
+                    if (capsWordOn)
                     {
-                        tap_code(KC_P0);
-                        tap_code(KC_P0);
-                        tap_code(KC_P0);
+                        add_weak_mods(MOD_BIT(KC_LSFT));
                     }
-                    process = false;
+
+                    tap_code(KC_T);
+
+                    if (capsWordOn)
+                    {
+                        add_weak_mods(MOD_BIT(KC_LSFT));
+                    }
+                    else
+                    {
+                        if (modifiers & MOD_BIT_LSHIFT)
+                        {
+                            unregister_code(KC_LSFT);
+                        }
+                        if (modifiers & MOD_BIT_RSHIFT)
+                        {
+                            unregister_code(KC_RSFT);
+                        }
+                    }
+
+                    tap_code(KC_H);
+
+                    if (!capsWordOn)
+                    {
+                        if (modifiers & MOD_BIT_LSHIFT)
+                        {
+                            register_code(KC_LSFT);
+                        }
+                        if (modifiers & MOD_BIT_RSHIFT)
+                        {
+                            register_code(KC_RSFT);
+                        }
+                    }
                     break;
                 }
                 default:

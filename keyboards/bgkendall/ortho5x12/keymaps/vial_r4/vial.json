@@ -58,8 +58,13 @@
         "name": "BK_EFLIP",
         "title": "Encoder Cursor Direction Flip",
         "shortName": "Enc.\nFlip"
+      },
+      {
+        "name": "BK_THORN",
+        "title": "Thorn (Th)",
+        "shortName": "Þ"
       }
-    ],
+  ],
   "matrix": { "rows": 5, "cols": 13 },
   "layouts": {
     "labels":[
