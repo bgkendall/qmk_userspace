@@ -149,11 +149,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
                     {
                         tap_code(KC_P0);
                         tap_code(KC_P0);
-                        register_code(KC_P0);
-                    }
-                    else
-                    {
-                        unregister_code(KC_P0);
+                        tap_code(KC_P0);
                     }
                     process = false;
                     break;
