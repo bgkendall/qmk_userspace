@@ -55,23 +55,23 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
 
                     if (modifiers & MOD_MASK_GUI)
                     {
-                        SEND_STRING(TEXT_STRING_3g);
+                        SEND_STRING_DELAY(TEXT_STRING_3g, TAP_CODE_DELAY);
                     }
                     else if (modifiers & MOD_MASK_ALT)
                     {
-                        SEND_STRING(TEXT_STRING_3a);
+                        SEND_STRING_DELAY(TEXT_STRING_3a, TAP_CODE_DELAY);
                     }
                     else if (modifiers & MOD_MASK_SHIFT)
                     {
-                        SEND_STRING(TEXT_STRING_3s);
+                        SEND_STRING_DELAY(TEXT_STRING_3s, TAP_CODE_DELAY);
                     }
                     else if (modifiers & MOD_MASK_CTRL)
                     {
-                        SEND_STRING(TEXT_STRING_3c);
+                        SEND_STRING_DELAY(TEXT_STRING_3c, TAP_CODE_DELAY);
                     }
                     else
                     {
-                        SEND_STRING(TEXT_STRING_3);
+                        SEND_STRING_DELAY(TEXT_STRING_3, TAP_CODE_DELAY);
                     }
                     set_mods(modifiers);
                     process = false;
@@ -94,11 +94,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
                     // May sometimes not switch to the Unicode source before sending the Unicode string, or
                     // may not switch back to the usual Input Source
                     //
-                    tap_code16(C(KC_SPACE));  // Switch to Unicode input (hopefully)
-                    register_code(KC_RALT);   // Hold down right alt
-                    SEND_STRING("00d7");      // Send Unicode for multiplication sign
-                    unregister_code(KC_RALT); // Release right alt
-                    tap_code16(C(KC_SPACE));  // Switch away from Unicode input
+                    tap_code16(C(KC_SPACE));                    // Switch to Unicode input (hopefully)
+                    register_code(KC_RALT);                     // Hold down right alt
+                    SEND_STRING_DELAY("00d7", TAP_CODE_DELAY);  // Send Unicode for multiplication sign
+                    unregister_code(KC_RALT);                   // Release right alt
+                    tap_code16(C(KC_SPACE));                    // Switch away from Unicode input
                     process = false;
                     break;
                 }
@@ -148,9 +148,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
                     //
                     const bool capsWordOn =
 #ifdef CAPS_WORD_ENABLE
-                                            is_caps_word_on();
+                                    is_caps_word_on();
 #else
-                                            false;
+                                    false;
 #endif
 
                     if (capsWordOn)
