@@ -54,6 +54,7 @@ enum BGK_CUSTOM_KEYCODES
     BK_EDOWN,
     BK_EUP,
     BK_EFLIP,
+    BK_THORN,
     KB_SAFE_RANGE
 };
 

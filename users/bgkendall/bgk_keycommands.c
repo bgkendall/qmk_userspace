@@ -9,6 +9,7 @@
 #include "bgk_keycommands.h"
 
 #include "quantum.h"
+#include "bgk_keycodes.h"
 
 
 // Global variables and functions for Cmd+Tab via encoder or other non-standard mechanism.
@@ -130,6 +131,7 @@ bool caps_word_press_user(uint16_t keycode)
         // Keycodes that continue Caps Word, with shift applied:
         case KC_A ... KC_Z:
         case KC_MINS:
+        case BK_THORN:
         // The first 50% of Tap Dances will cancel Caps Word, the other half will be shifted:
         case (QK_TAP_DANCE + BGK_TAP_DANCE_ENTRIES/2) ... QK_TAP_DANCE_MAX:
             add_weak_mods(MOD_BIT(KC_LSFT));  // Apply shift to next key

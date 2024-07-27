@@ -30,6 +30,9 @@
         "enabled": true,
         "double_tap_shift_turns_on": true
     },
+    "qmk": {
+        "tap_keycode_delay": 2
+    },
     "rgblight": {
         "led_count": 12,
         "hue_steps": 4,
