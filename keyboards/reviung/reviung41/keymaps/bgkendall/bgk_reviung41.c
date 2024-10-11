@@ -143,6 +143,12 @@ void caps_word_set_user(bool active)
     rgblight_set_layer_state(RGBL_CAPW, active);
 }
 
+uint32_t flash_ok(uint32_t trigger_time, void* cb_arg)
+{
+    rgblight_blink_layer_repeat(RGBL_OK, 333, 2);
+    return 0;
+}
+
 #endif // RGBLIGHT_ENABLE
 
 
@@ -332,7 +338,6 @@ bool process_record_keymap(int16_t keycode, keyrecord_t* record)
 }
 
 
-
 /*****************************************************************************
  * KEYBOARD INIT                                                             *
  *****************************************************************************/
@@ -373,8 +378,9 @@ void keyboard_post_init_user(void)
     // Turn off lighting:
     rgblight_disable();
 
-    // Flash OK layer:
-    rgblight_blink_layer_repeat(RGBL_OK, 500, 3);
+    // Flash OK layer - this is deferred as rgblight_blink_layer_repeat()
+    // does not seem to run reliably when called directly from here:
+    defer_exec(1, flash_ok, NULL);
 
     // Exclude top-side indicator light from effects:
     // rgblight_set_effect_range(0, RGBLED_NUM-1);
