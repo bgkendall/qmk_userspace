@@ -12,6 +12,7 @@ COMMAND_ENABLE = no
 CONSOLE_ENABLE = yes
 MOUSEKEY_ENABLE = yes
 NKRO_ENABLE = yes
+OS_DETECTION_ENABLE = yes
 
 SRC += bgk_reviung41.c
 

@@ -11,6 +11,7 @@
 
 #include "users/bgkendall/bgk_rgb.h"
 #include "users/bgkendall/bgk_shifted_mod_tap.h"
+#include "keycode_config.h"
 
 
 // enum RGB_LAYERS
@@ -81,6 +82,9 @@ enum RGB_LAYERS
     RGBL_CAPW,
     RGBL_CAPL,
     RGBL_PROG,
+    RGBL_MAC,
+    RGBL_WIN,
+    RGBL_LIN,
     RGBL_OK
 };
 
@@ -109,6 +113,9 @@ const rgblight_segment_t* const PROGMEM bgk_rgb_layers[] = RGBLIGHT_LAYERS_LIST
     [RGBL_CAPW] = bgkrgb_vividpink_indicator_layer,
     [RGBL_CAPL] = bgkrgb_red_indicator_layer,
     [RGBL_PROG] = bgkrgb_purple_indicator_layer,
+    [RGBL_MAC]  = bgkrgb_white_indicator_layer,
+    [RGBL_WIN]  = bgkrgb_blue_indicator_layer,
+    [RGBL_LIN]  = bgkrgb_yellow_indicator_layer,
     [RGBL_OK]   = bgkrgb_green_layer
 );
 
@@ -380,7 +387,7 @@ void keyboard_post_init_user(void)
 
     // Flash OK layer - this is deferred as rgblight_blink_layer_repeat()
     // does not seem to run reliably when called directly from here:
-    defer_exec(1, flash_ok, NULL);
+    //defer_exec(1, flash_ok, NULL);
 
     // Exclude top-side indicator light from effects:
     // rgblight_set_effect_range(0, RGBLED_NUM-1);
@@ -388,3 +395,38 @@ void keyboard_post_init_user(void)
 
 #endif // RGBLIGHT_ENABLE
 }
+
+#ifdef OS_DETECTION_ENABLE
+bool process_detected_host_os_kb(os_variant_t detected_os)
+{
+    if (!process_detected_host_os_user(detected_os))
+    {
+        return false;
+    }
+
+    switch (detected_os)
+    {
+        case OS_MACOS:
+        case OS_IOS:
+            keymap_config.swap_lctl_lgui = false;
+            keymap_config.swap_rctl_rgui = false;
+            rgblight_blink_layer_repeat(RGBL_MAC, 333, 2);
+            break;
+        case OS_WINDOWS:
+            keymap_config.swap_lctl_lgui = true;
+            keymap_config.swap_rctl_rgui = true;
+            rgblight_blink_layer_repeat(RGBL_WIN, 333, 2);
+            break;
+        case OS_LINUX:
+            keymap_config.swap_lctl_lgui = true;
+            keymap_config.swap_rctl_rgui = true;
+            rgblight_blink_layer_repeat(RGBL_LIN, 333, 2);
+            break;
+        default:
+            rgblight_blink_layer_repeat(RGBL_OK, 333, 2);
+            break;
+    }
+
+    return true;
+}
+#endif // OS_DETECTION_ENABLE
