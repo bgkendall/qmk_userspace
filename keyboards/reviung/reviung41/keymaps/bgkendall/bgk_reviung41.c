@@ -11,6 +11,7 @@
 
 #include "users/bgkendall/bgk_rgb.h"
 #include "users/bgkendall/bgk_shifted_mod_tap.h"
+#include "users/bgkendall/bgk_os_detect.h"
 #include "keycode_config.h"
 
 
@@ -379,15 +380,18 @@ void keyboard_post_init_user(void)
 
 #ifdef RGBLIGHT_ENABLE
 
+    bgk_os_rgb_layer = (struct bgk_os_rgb_layer_t){
+        .mac     = RGBL_MAC,
+        .windows = RGBL_WIN,
+        .linux   = RGBL_LIN,
+        .other   = RGBL_OK
+    };
+
     // Enable the LED layers:
     rgblight_layers = bgk_rgb_layers;
 
     // Turn off lighting:
     rgblight_disable();
-
-    // Flash OK layer - this is deferred as rgblight_blink_layer_repeat()
-    // does not seem to run reliably when called directly from here:
-    //defer_exec(1, flash_ok, NULL);
 
     // Exclude top-side indicator light from effects:
     // rgblight_set_effect_range(0, RGBLED_NUM-1);
@@ -395,38 +399,3 @@ void keyboard_post_init_user(void)
 
 #endif // RGBLIGHT_ENABLE
 }
-
-#ifdef OS_DETECTION_ENABLE
-bool process_detected_host_os_kb(os_variant_t detected_os)
-{
-    if (!process_detected_host_os_user(detected_os))
-    {
-        return false;
-    }
-
-    switch (detected_os)
-    {
-        case OS_MACOS:
-        case OS_IOS:
-            keymap_config.swap_lctl_lgui = false;
-            keymap_config.swap_rctl_rgui = false;
-            rgblight_blink_layer_repeat(RGBL_MAC, 333, 2);
-            break;
-        case OS_WINDOWS:
-            keymap_config.swap_lctl_lgui = true;
-            keymap_config.swap_rctl_rgui = true;
-            rgblight_blink_layer_repeat(RGBL_WIN, 333, 2);
-            break;
-        case OS_LINUX:
-            keymap_config.swap_lctl_lgui = true;
-            keymap_config.swap_rctl_rgui = true;
-            rgblight_blink_layer_repeat(RGBL_LIN, 333, 2);
-            break;
-        default:
-            rgblight_blink_layer_repeat(RGBL_OK, 333, 2);
-            break;
-    }
-
-    return true;
-}
-#endif // OS_DETECTION_ENABLE
