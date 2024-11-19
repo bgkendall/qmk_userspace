@@ -105,18 +105,40 @@ bool rgb_matrix_indicators_kb(void)
 
     if (unlikely(powering_up))
     {
-        HSV hsv = rgb_matrix_config.hsv;
+        static uint8_t os_indication_count = 100;
 
-        if (((hsv.h + POWER_UP_HUE_STEP) % 256) == bgk_hsv_layers[RGBL_POWERON].h)
+        switch (detected_host_os())
+        {
+            case OS_MACOS:
+            case OS_IOS:
+                HSV hsv = rgb_matrix_config.hsv;
+                if (((hsv.h + POWER_UP_HUE_STEP) % 256) == bgk_hsv_layers[RGBL_POWERON].h)
+                {
+                    powering_up = false;
+                }
+                else
+                {
+                    hsv.h += POWER_UP_HUE_STEP;
+                    rgb_matrix_sethsv_noeeprom(hsv.h, hsv.s, hsv.v);
+
+                    return true;
+                }
+                break;
+            case OS_WINDOWS:
+                rgb_layer = RGBL_B;
+                break;
+            case OS_LINUX:
+                rgb_layer = RGBL_L;
+                break;
+            default:
+                rgb_layer = RGBL_POWERON;
+                break;
+        }
+        os_indication_count--;
+
+        if (os_indication_count == 0)
         {
             powering_up = false;
-        }
-        else
-        {
-            hsv.h += POWER_UP_HUE_STEP;
-            rgb_matrix_sethsv_noeeprom(hsv.h, hsv.s, hsv.v);
-
-            return true;
         }
     }
     else if (host_keyboard_led_state().caps_lock)
