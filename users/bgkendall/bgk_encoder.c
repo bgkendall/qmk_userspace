@@ -23,13 +23,16 @@
 #include "debug.h"
 
 
+
 void debug_encoder_event(uint8_t index, bool clockwise, keyevent_t event)
 {
+#ifndef NO_DEBUG
     dprintf("Sending encoder %d %s turn as %s event: (%d, %d) with layers ",
             index, (clockwise ? "clockwise" : "anticlock" ),
             (event.pressed ? "-press-" : "release"), event.key.row, event.key.col);
     debug_bin32(layer_state);
     dprint("\n");
+#endif
 }
 
 
@@ -142,6 +145,7 @@ bool encoder_update_user(uint8_t index, bool clockwise)
 
 
 #include "mousekey.h"
+#include "process_rgb.h"
 
 
 bool (*bgkencoder_custom_keycode_handler)(uint16_t, bool) = NULL;
