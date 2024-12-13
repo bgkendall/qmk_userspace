@@ -38,8 +38,6 @@ enum TAP_DANCE_KEYCODES
 
 #else
 
-#define TD(k) KC_NO
-
 #endif // TAP_DANCE_ENABLE
 
 #endif // ¬VIAL_ENABLE
