@@ -9,6 +9,8 @@
 #ifdef RGBLIGHT_LAYERS
 
 #include "users/bgkendall/bgk_rgb.h"
+#include "users/bgkendall/bgk_shifted_mod_tap.h"
+#include "users/bgkendall/bgk_os_detect.h"
 
 const rgblight_segment_t PROGMEM ortho_5_12_ok_layer[] = RGBLIGHT_LAYER_SEGMENTS
 (
@@ -470,6 +472,22 @@ const key_override_t** key_overrides = (const key_override_t *[])
 
 #ifndef KEYBOARD_bgkendall_ortho5x12_rev2m
 
+bool process_record_kb(uint16_t keycode, keyrecord_t* record)
+{
+    bool process = true;
+
+#if BGK_SHIFTED_MOD_TAP_ENABLE == yes
+    process &= bgk_process_shifted_mod_tap(keycode, record);
+#endif
+
+    if (process)
+    {
+        process &= process_record_user(keycode, record);
+    }
+
+    return process;
+}
+
 void keyboard_post_init_kb(void)
 {
 #ifdef CONSOLE_ENABLE
@@ -479,14 +497,20 @@ void keyboard_post_init_kb(void)
 #endif
 
 #ifdef RGBLIGHT_LAYERS
+
+    bgk_os_rgb_layer = (struct bgk_os_rgb_layer_t){
+        .mac     = RGBL_F,
+        .windows = RGBL_B,
+        .linux   = RGBL_L,
+        .other   = RGBL_R
+    };
+
     // Enable the LED layers:
     rgblight_layers = ortho_5_12_rgb_layers;
 
     // Turn off lighting:
     rgblight_disable();
 
-    // Flash OK layer:
-    rgblight_blink_layer(RGBL_OK, 800);
 #endif
 
 #ifdef ENCODER_GROUND_PIN

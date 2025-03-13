@@ -22,6 +22,7 @@
         "mousekey": true,
         "music": false,
         "nkro": true,
+        "os_detection": true,
         "rgblight": true,
         "rgb_matrix": false,
         "unicode": false
