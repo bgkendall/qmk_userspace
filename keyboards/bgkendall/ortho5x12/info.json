@@ -25,7 +25,8 @@
         "os_detection": true,
         "rgblight": true,
         "rgb_matrix": false,
-        "unicode": false
+        "unicode": false,
+        "bgk_shifted_mod_tap": true
     },
     "caps_word": {
         "enabled": true,
