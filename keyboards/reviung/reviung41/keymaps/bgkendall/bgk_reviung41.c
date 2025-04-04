@@ -340,7 +340,6 @@ bool process_record_keymap(int16_t keycode, keyrecord_t* record)
 
     process &= process_programmable_key(keycode, record);
     // process &= override_dotcolon(keycode, record);
-    process &= bgk_process_shifted_mod_tap(keycode, record);
 
     return process;
 }
@@ -380,12 +379,14 @@ void keyboard_post_init_user(void)
 
 #ifdef RGBLIGHT_ENABLE
 
+#ifdef OS_DETECTION_ENABLE
     bgk_os_rgb_layer = (struct bgk_os_rgb_layer_t){
         .mac     = RGBL_MAC,
         .windows = RGBL_WIN,
         .linux   = RGBL_LIN,
         .other   = RGBL_OK
     };
+#endif // OS_DETECTION_ENABLE
 
     // Enable the LED layers:
     rgblight_layers = bgk_rgb_layers;
