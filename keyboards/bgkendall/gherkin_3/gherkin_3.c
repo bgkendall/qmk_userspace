@@ -5,7 +5,6 @@
 #endif
 
 #include "users/bgkendall/bgk_keycommands.h"
-#include "users/bgkendall/bgk_shifted_mod_tap.h"
 
 
 /*****************************************************************************
@@ -62,7 +61,7 @@ uint8_t get_rgb_layer(layer_state_t state)
 #include "lib/lib8tion/lib8tion.h"
 #include "users/bgkendall/bgk_rgb.h"
 
-const HSV bgk_hsv_layers[] = {
+const hsv_t bgk_hsv_layers[] = {
     [RGBL_OFF] = { HSV_BLACK },
 
     [RGBL_F] = { HSV_WHITE },
@@ -111,7 +110,8 @@ bool rgb_matrix_indicators_kb(void)
         {
             case OS_MACOS:
             case OS_IOS:
-                HSV hsv = rgb_matrix_config.hsv;
+            {
+                hsv_t hsv = rgb_matrix_config.hsv;
                 if (((hsv.h + POWER_UP_HUE_STEP) % 256) == bgk_hsv_layers[RGBL_POWERON].h)
                 {
                     powering_up = false;
@@ -124,6 +124,7 @@ bool rgb_matrix_indicators_kb(void)
                     return true;
                 }
                 break;
+            }
             case OS_WINDOWS:
                 rgb_layer = RGBL_B;
                 break;
@@ -162,12 +163,6 @@ bool rgb_matrix_indicators_kb(void)
 }
 
 #endif // RGB_MATRIX_ENABLE
-
-
-bool process_record_keymap(int16_t keycode, keyrecord_t* record)
-{
-    return bgk_process_shifted_mod_tap(keycode, record);
-}
 
 
 void keyboard_post_init_kb(void)

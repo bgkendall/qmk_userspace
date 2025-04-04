@@ -24,8 +24,10 @@
         "mousekey": true,
         "music": false,
         "nkro": true,
+        "os_detection": true,
         "rgb_matrix": true,
-        "unicode": false
+        "unicode": false,
+        "bgk_shifted_mod_tap": true
     },
     "backlight": {
         "driver": "software",
@@ -35,6 +37,9 @@
     "caps_word": {
         "enabled": true,
         "both_shifts_turns_on": true
+    },
+    "rgb_matrix": {
+        "led_count": 1
     },
     "ws2812": {
         "driver": "vendor"

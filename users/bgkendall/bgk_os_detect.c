@@ -47,7 +47,9 @@ bool process_detected_host_os_user(os_variant_t detected_os)
     if (rgblayer)
     {
 #       ifdef RGBLIGHT_ENABLE
-            rgblight_blink_layer_repeat(rgblayer, 333, 2);
+#           ifdef RGBLIGHT_LAYER_BLINK
+                rgblight_blink_layer_repeat(rgblayer, 333, 2);
+#           endif
 #       endif
     }
 

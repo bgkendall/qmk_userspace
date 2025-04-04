@@ -1,7 +1,8 @@
 {
     "keyboard_name": "Gherkin+3 (Boar)",
     "features": {
-        "rgblight": true
+        "rgblight": true,
+        "bgk_custom_ws2812": true
     },
     "backlight": {
         "pin": "GP9"

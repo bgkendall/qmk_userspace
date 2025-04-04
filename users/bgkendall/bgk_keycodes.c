@@ -7,6 +7,9 @@
 #include "bgk_keycodes.h"
 #include "bgk_keycommands.h"
 #include "users/bgkendall/private/texts.h"
+#ifdef BGK_SHIFTED_MOD_TAP_ENABLE
+#   include "bgk_shifted_mod_tap.h"
+#endif
 
 
 #ifndef DYNAMIC_KEYMAP_MACRO_COUNT
@@ -24,6 +27,13 @@ __attribute__ ((weak)) bool process_record_keymap(uint16_t keycode, keyrecord_t*
 bool process_record_user(uint16_t keycode, keyrecord_t* record)
 {
     bool process = process_record_keymap(keycode, record);
+
+#ifdef BGK_SHIFTED_MOD_TAP_ENABLE
+    if (process)
+    {
+            process = bgk_process_shifted_mod_tap(keycode, record);
+    }
+#endif
 
     if (process)
     {
