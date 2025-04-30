@@ -29,7 +29,7 @@ LTO_ENABLE = yes            # Link Time Optimization
 AVR_USE_MINIMAL_PRINTF = yes # Use smaller printf implementations from AVRs libc
 
 #LAYOUTS = ortho_5x12
-DEFAULT_FOLDER = handwired/bgkendall/ortho5x12/rev2
+DEFAULT_FOLDER = bgkendall/ortho5x12/rev2
 
 # Bootloader for Elite-C
 BOOTLOADER = atmel-dfu

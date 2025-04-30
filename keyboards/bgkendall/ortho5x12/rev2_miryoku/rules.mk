@@ -28,7 +28,7 @@ KEY_OVERRIDE_ENABLE = yes   # Key Override support
 LTO_ENABLE = yes            # Link Time Optimization
 AVR_USE_MINIMAL_PRINTF = yes # Use smaller printf implementations from AVRs libc
 
-DEFAULT_FOLDER = handwired/bgkendall/ortho5x12/rev2
+DEFAULT_FOLDER = bgkendall/ortho5x12/rev2
 
 # Bootloader for Elite-C
 BOOTLOADER = atmel-dfu

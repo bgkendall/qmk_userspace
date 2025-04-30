@@ -27,7 +27,7 @@ LTO_ENABLE = yes            # Link Time Optimization
 AVR_USE_MINIMAL_PRINTF = no # Use smaller printf implementations from AVRs libc
 
 #LAYOUTS = ortho_5x12
-DEFAULT_FOLDER = handwired/bgkendall/ortho5x12/rev2
+DEFAULT_FOLDER = bgkendall/ortho5x12/rev2
 MCU = RP2040
 BOOTLOADER = rp2040
 WS2812_DRIVER = vendor
