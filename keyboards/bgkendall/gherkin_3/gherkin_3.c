@@ -165,6 +165,24 @@ bool rgb_matrix_indicators_kb(void)
 #endif // RGB_MATRIX_ENABLE
 
 
+bool process_record_kb(uint16_t keycode, keyrecord_t* record)
+{
+    if (record->event.pressed)
+    {
+        switch (keycode & QK_BASIC_MAX)
+        {
+            case KC_AGAIN:
+            {
+                tap_code16(G(S(KC_Z)));
+                return false;
+            }
+        }
+    }
+
+    return process_record_user(keycode, record);
+}
+
+
 void keyboard_post_init_kb(void)
 {
 #ifdef CONSOLE_ENABLE
