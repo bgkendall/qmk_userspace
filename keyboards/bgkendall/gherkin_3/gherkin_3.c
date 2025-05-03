@@ -1,10 +1,10 @@
 #include QMK_KEYBOARD_H
 
+#include "quantum.h"
+
 #ifdef CONSOLE_ENABLE
 # include <print.h>
 #endif
-
-#include "users/bgkendall/bgk_keycommands.h"
 
 
 /*****************************************************************************
@@ -58,7 +58,6 @@ uint8_t get_rgb_layer(layer_state_t state)
 #ifdef RGB_MATRIX_ENABLE
 
 #include "color.h"
-#include "lib/lib8tion/lib8tion.h"
 #include "users/bgkendall/bgk_rgb.h"
 
 const hsv_t bgk_hsv_layers[] = {
@@ -167,16 +166,12 @@ bool rgb_matrix_indicators_kb(void)
 
 bool process_record_kb(uint16_t keycode, keyrecord_t* record)
 {
-    if (record->event.pressed)
+    if (record->tap.count > 0 &&
+        record->event.pressed &&
+        (keycode & QK_BASIC_MAX) == KC_AGAIN)
     {
-        switch (keycode & QK_BASIC_MAX)
-        {
-            case KC_AGAIN:
-            {
-                tap_code16(G(S(KC_Z)));
-                return false;
-            }
-        }
+        tap_code16(G(S(KC_Z)));
+        return false;
     }
 
     return process_record_user(keycode, record);
