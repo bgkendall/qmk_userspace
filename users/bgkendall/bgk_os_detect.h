@@ -7,8 +7,6 @@
 #pragma once
 
 
-#include "quantum.h"
-
 struct bgk_os_rgb_layer_t
 {
     uint8_t mac;
