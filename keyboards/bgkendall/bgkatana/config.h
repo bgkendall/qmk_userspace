@@ -10,6 +10,8 @@
 #define TAPPING_TERM 175
 #define PERMISSIVE_HOLD
 
+#define RGBLIGHT_LAYER_KEY {8,2}
+
 // #ifdef NO_DEBUG
 // #   undef NO_DEBUG
 // #endif

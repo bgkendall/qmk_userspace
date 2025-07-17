@@ -38,21 +38,20 @@ enum RGB_LAYERS
     RGBL_POWERON
  };
 
-const uint8_t LAYER_COLOUR[] =
-{
-    RGBL_OFF,
-    RGBL_OFF,
-    RGBL_J,
-    RGBL_C,
-    RGBL_G,
-    RGBL_M,
-    RGBL_OFF,
-    RGBL_S
-};
+// const uint8_t LAYER_COLOUR[] =
+// {
+//     RGBL_OFF,
+//     RGBL_OFF,
+//     RGBL_J,
+//     RGBL_H,
+//     RGBL_G,
+//     RGBL_C,
+//     RGBL_M,
+//     RGBL_S
+// };
 
 uint8_t get_rgb_layer(layer_state_t state)
 {
-
 #ifdef RGBLIGHT_LAYER_KEY
     uint16_t rgb_layer_key = keymap_key_to_keycode(get_highest_layer(state),
                                                    (keypos_t)RGBLIGHT_LAYER_KEY);
@@ -62,12 +61,12 @@ uint8_t get_rgb_layer(layer_state_t state)
         return (uint8_t)(rgb_layer_key - KC_A + 1);
     }
 #else
-    const static uint8_t NUM_LAYER_COLOURS = sizeof(LAYER_COLOUR)/sizeof(LAYER_COLOUR[0]);
-    uint8_t layer = get_highest_layer(state);
-    if (layer < NUM_LAYER_COLOURS)
-    {
-        return LAYER_COLOUR[layer];
-    }
+    // const static uint8_t NUM_LAYER_COLOURS = sizeof(LAYER_COLOUR)/sizeof(LAYER_COLOUR[0]);
+    // uint8_t layer = get_highest_layer(state);
+    // if (layer < NUM_LAYER_COLOURS)
+    // {
+    //     return LAYER_COLOUR[layer];
+    // }
 #endif // RGBLIGHT_LAYER_KEY
 
     return 0;
