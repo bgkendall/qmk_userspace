@@ -28,7 +28,8 @@
         "cols": ["GP13", "GP15", "GP26", "GP27", "GP28", "GP29", "GP1", "GP2", "GP3", "GP4", "GP5", "GP6"]
     },
     "caps_word": {
-        "enabled": true
+        "enabled": true,
+        "double_tap_shift_turns_on": true
     },
     "rgb_matrix": {
         "led_count": 1
