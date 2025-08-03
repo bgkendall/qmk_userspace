@@ -5,6 +5,7 @@
 //
 
 #include "bgk_os_detect.h"
+#include "action.h"
 #include "keycode_config.h"
 #include "os_detection.h"
 
