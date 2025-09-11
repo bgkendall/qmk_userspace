@@ -56,6 +56,8 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
                     {
                         tap_code16(G(S(KC_4)));
                     }
+                    process = false;
+                    break;
                 }
                 case BK_000:
                 {
