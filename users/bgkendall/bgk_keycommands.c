@@ -10,6 +10,7 @@
 
 #include "quantum.h"
 #include "bgk_keycodes.h"
+#include "bgk_os_detect.h"
 
 
 // Global variables and functions for Cmd+Tab via encoder or other non-standard mechanism.
@@ -20,29 +21,12 @@ bool bgkey_app_switch_mod_active = false;
 uint16_t bgkey_app_switch_mod_timer = 0;
 
 
-bool is_windows(void)
-{
-// #ifdef OS_DETECTION_ENABLE
-//     return (detected_host_os() == OS_LINUX ||
-//             detected_host_os() == OS_WINDOWS);
-// #else
-//     return false;
-// #endif
-    if (keymap_config.swap_lctl_lgui)
-    {
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-
 void bgkey_register_app_switch_modifier(void)
 {
     if (!bgkey_app_switch_mod_active)
     {
         // Register Command for Cmd+Tab handling:
-        if (is_windows())
+        if (bgk_is_windows())
         {
             register_code(KC_LALT);
         }
@@ -63,7 +47,7 @@ bool bgkey_unregister_app_switch_modifier(bool immediate)
         if (immediate || timer_elapsed(bgkey_app_switch_mod_timer) > bgkey_app_switch_mod_hold_time)
         {
             bgkey_app_switch_mod_active = false;
-            if (is_windows())
+            if (bgk_is_windows())
             {
                 unregister_code(KC_LALT);
             }
@@ -88,7 +72,7 @@ bool bgkey_register_forward_app_switch(void)
 bool bgkey_register_backward_app_switch(void)
 {
     bgkey_register_app_switch_modifier();
-    if (is_windows())
+    if (bgk_is_windows())
     {
         tap_code16(S(KC_TAB));
     }

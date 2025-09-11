@@ -6,6 +6,7 @@
 
 #include "bgk_keycodes.h"
 #include "bgk_keycommands.h"
+#include "bgk_os_detect.h"
 #include "users/bgkendall/private/texts.h"
 #ifdef BGK_SHIFTED_MOD_TAP_ENABLE
 #   include "bgk_shifted_mod_tap.h"
@@ -45,6 +46,17 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
         {
             switch (keycode)
             {
+                case KC_PSCR:
+                {
+                    if (bgk_is_windows())
+                    {
+                        tap_code16(G(S(KC_S)));
+                    }
+                    else
+                    {
+                        tap_code16(G(S(KC_4)));
+                    }
+                }
                 case BK_000:
                 {
                     // Thousands (000) key

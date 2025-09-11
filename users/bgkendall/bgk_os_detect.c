@@ -8,9 +8,25 @@
 #include "action.h"
 #include "keycode_config.h"
 #include "os_detection.h"
+#include "rgblight.h"
 
 
-#ifdef OS_DETECTION_ENABLE
+bool bgk_is_windows(void)
+{
+// #ifdef OS_DETECTION_ENABLE
+//     return (detected_host_os() == OS_LINUX ||
+//             detected_host_os() == OS_WINDOWS);
+// #else
+//     return false;
+// #endif
+    if (keymap_config.swap_lctl_lgui)
+    {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
 
 struct bgk_os_rgb_layer_t bgk_os_rgb_layer = {
     .mac     = 0,
@@ -18,6 +34,8 @@ struct bgk_os_rgb_layer_t bgk_os_rgb_layer = {
     .linux   = 0,
     .other   = 0
 };
+
+#ifdef OS_DETECTION_ENABLE
 
 bool process_detected_host_os_user(os_variant_t detected_os)
 {
