@@ -8,6 +8,7 @@
 
 #pragma once
 
+#include "quantum.h"
 
 // Command-Tab simulation
 //
