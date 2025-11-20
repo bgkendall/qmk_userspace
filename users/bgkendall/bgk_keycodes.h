@@ -42,7 +42,7 @@ enum BGK_CUSTOM_KEYCODES
 #ifdef VIA_ENABLE
     BK_000 = QK_KB_0,
 #else
-    BK_000 = SAFE_RANGE,
+    BK_000 = QK_USER,
 #endif
     BK_BGK,
     BK_APP_BACKWARD,
