@@ -5,6 +5,9 @@
     "board": "GENERIC_RP_RP2040",
     "debounce": 5,
     "diode_direction": "COL2ROW",
+    "build": {
+        "lto": true
+    },
     "features": {
         "audio": false,
         "backlight": false,
@@ -15,41 +18,17 @@
         "console": false,
         "encoder": false,
         "extrakey": false,
-        "lto": false,
         "magic": false,
         "midi": false,
         "mousekey": false,
         "music": false,
         "nkro": false,
-        "rgblight": true,
+        "rgblight": false,
         "unicode": false
     },
     "matrix_pins": {
-        "direct": [ [ "GP12", "GP13", "GP14" ] ]
-    },
-    "ws2812": {
-        "driver": "vendor",
-        "pin": "GP16"
-    },
-    "rgblight": {
-        "led_count": 1,
-        "hue_steps": 4,
-        "saturation_steps": 17,
-        "brightness_steps": 17,
-        "max_brightness": 128,
-        "sleep": false,
-        "layers": {
-            "blink": true,
-            "enabled": true,
-            "max": 22,
-            "override_rgb": true
-        },
-        "animations": {
-            "breathing": true,
-            "christmas": true,
-            "rainbow_swirl": true,
-            "rgb_test": true
-        }
+        "rows": [ "GP0", "GP1", "GP5" ],
+        "cols": [ "GP0", "GP1", "GP5" ]
     },
     "usb": {
         "pid": "0x0001",
@@ -58,9 +37,12 @@
     "layouts": {
         "LAYOUT": {
             "layout": [
-                {"label":"A", "matrix": [0,0], "y":0, "x":0},
-                {"label":"B", "matrix": [0,1], "y":0, "x":1},
-                {"label":"C", "matrix": [0,2], "y":0, "x":2}
+                {"label":"SW1", "matrix": [1,0], "y":0, "x":0},
+                {"label":"SW2", "matrix": [0,1], "y":0, "x":1},
+                {"label":"SW3", "matrix": [2,0], "y":2, "x":0},
+                {"label":"SW4", "matrix": [0,2], "y":2, "x":1},
+                {"label":"SW5", "matrix": [2,1], "y":1, "x":0},
+                {"label":"SW6", "matrix": [1,2], "y":1, "x":1}
             ]
         }
     }
