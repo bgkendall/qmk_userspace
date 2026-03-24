@@ -26,11 +26,13 @@ void bgkey_register_app_switch_modifier(void)
     if (!bgkey_app_switch_mod_active)
     {
         // Register Command for Cmd+Tab handling:
+#ifdef OS_DETECTION_ENABLE
         if (bgk_is_windows())
         {
             register_code(KC_LALT);
         }
         else
+#endif
         {
             register_code(KC_LCMD);
         }
@@ -47,11 +49,13 @@ bool bgkey_unregister_app_switch_modifier(bool immediate)
         if (immediate || timer_elapsed(bgkey_app_switch_mod_timer) > bgkey_app_switch_mod_hold_time)
         {
             bgkey_app_switch_mod_active = false;
+#ifdef OS_DETECTION_ENABLE
             if (bgk_is_windows())
             {
                 unregister_code(KC_LALT);
             }
             else
+#endif
             {
                 unregister_code(KC_LCMD);
             }
@@ -72,11 +76,13 @@ bool bgkey_register_forward_app_switch(void)
 bool bgkey_register_backward_app_switch(void)
 {
     bgkey_register_app_switch_modifier();
+#ifdef OS_DETECTION_ENABLE
     if (bgk_is_windows())
     {
         tap_code16(S(KC_TAB));
     }
     else
+#endif
     {
         tap_code16(KC_GRAVE);
     }

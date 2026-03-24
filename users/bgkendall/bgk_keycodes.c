@@ -48,11 +48,13 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
             {
                 case KC_PSCR:
                 {
+#ifdef OS_DETECTION_ENABLE
                     if (bgk_is_windows())
                     {
                         tap_code16(G(S(KC_S)));
                     }
                     else
+#endif
                     {
                         tap_code16(G(S(KC_4)));
                     }
