@@ -2,6 +2,8 @@
 // SPDX-License-Identifier: GPL-2.0-or-later
 
 #include "keycodes.h"
+#include "keymap_us.h"
+
 #include QMK_KEYBOARD_H
 
 #define HM_A	LSFT_T(KC_A)
@@ -46,3 +48,37 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
     [2] =   { ENCODER_CCW_CW(_______, _______), ENCODER_CCW_CW(_______, _______), ENCODER_CCW_CW(_______, _______), ENCODER_CCW_CW(_______, _______) }
 };
 #endif
+
+
+bool process_record_keymap(int16_t keycode, keyrecord_t* record)
+{
+    bool process = true;
+    int16_t base_keycode = keycode;
+
+    if (IS_QK_MODS(keycode)    ||
+        IS_QK_MOD_TAP(keycode) ||
+        IS_QK_LAYER_TAP(keycode))
+    {
+        base_keycode &= QK_BASIC_MAX;
+    }
+
+    if (keycode == KC_WWW_FAVORITES ||
+        (record->tap.count > 0 && base_keycode == KC_WWW_FAVORITES))
+    {
+        if (!process_key_override(keycode, record))
+        {
+            // Key Override triggered - do not send the programmed key
+        }
+        else if (record->event.pressed)
+        {
+            register_code16(KC_QUESTION);
+        }
+        else
+        {
+            unregister_code16(KC_QUESTION);
+        }
+        process = false;
+    }
+
+    return process;
+}
