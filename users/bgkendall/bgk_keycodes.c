@@ -39,7 +39,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
     if (process)
     {
         if (record->tap.count > 0 &&
-            record->event.pressed &&
             (keycode & QK_BASIC_MAX) == KC_AGAIN)
         {
             // On small boards, Z is a Mod-Tap with Shift, which makes “Redo”
@@ -48,16 +47,57 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
             // also usually a Shift Mod-Tap, and thus only basic keys can be
             // used, “Again” is used as a stand-in that is replaced here.
             //
-            if (bgk_is_windows())
+            if (!process_key_override(keycode, record))
             {
-                tap_code16(C(S(KC_Z)));
+                // Key Override triggered - do not override the key
+            }
+            else if (record->event.pressed)
+            {
+                if (bgk_is_windows())
+                {
+                    register_code16(C(S(KC_Z)));
+                }
+                else
+                {
+                    register_code16(G(S(KC_Z)));
+                }
             }
             else
             {
-                tap_code16(G(S(KC_Z)));
+                if (bgk_is_windows())
+                {
+                    unregister_code16(C(S(KC_Z)));
+                }
+                else
+                {
+                    unregister_code16(G(S(KC_Z)));
+                }
             }
             process = false;
         }
+#ifdef BGK_FAVOURITE_SUBSTITUTE
+        else if (record->tap.count > 0 &&
+                 (keycode & QK_BASIC_MAX) == KC_WWW_FAVORITES)
+        {
+            // BGK_FAVOURITE_SUBSTITUTE can be used to override the Browser
+            // Fav. (KC_WFAV) key. This basic key can then be used in a Mod-Tap
+            // *and* a Key Override.
+            //
+            if (!process_key_override(keycode, record))
+            {
+                // Key Override triggered - do not override the key
+            }
+            else if (record->event.pressed)
+            {
+                register_code16(BGK_FAVOURITE_SUBSTITUTE);
+            }
+            else
+            {
+                unregister_code16(BGK_FAVOURITE_SUBSTITUTE);
+            }
+            process = false;
+        }
+#endif // BGK_FAVOURITE_SUBSTITUTE
         else if (record->event.pressed)
         {
             static bool cursor_vertical = false;
