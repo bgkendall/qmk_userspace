@@ -22,9 +22,4 @@ ifeq ($(strip $(BGK_SHIFTED_MOD_TAP_ENABLE)), yes)
 	CFLAGS += -DBGK_SHIFTED_MOD_TAP_ENABLE
 endif
 
-ifeq ($(strip $(OS_DETECTION_ENABLE)), yes)
-    $(info Enabling BGK OS Detect)
-    SRC += bgk_os_detect.c
-endif
-
-SRC += bgk_keycommands.c bgk_keycodes.c
+SRC += bgk_keycommands.c bgk_keycodes.c bgk_os_detect.c

@@ -32,29 +32,26 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
 #ifdef BGK_SHIFTED_MOD_TAP_ENABLE
     if (process)
     {
-            process = bgk_process_shifted_mod_tap(keycode, record);
+        process = bgk_process_shifted_mod_tap(keycode, record);
     }
 #endif
 
     if (process)
     {
-        static bool cursor_vertical = false;
-
-        const uint8_t modifiers = get_mods();
-
         if (record->event.pressed)
         {
+            static bool cursor_vertical = false;
+            const uint8_t modifiers = get_mods();
+
             switch (keycode)
             {
                 case KC_PSCR:
                 {
-#ifdef OS_DETECTION_ENABLE
                     if (bgk_is_windows())
                     {
                         tap_code16(G(S(KC_S)));
                     }
                     else
-#endif
                     {
                         tap_code16(G(S(KC_4)));
                     }
