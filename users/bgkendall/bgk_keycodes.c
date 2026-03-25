@@ -38,7 +38,27 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
 
     if (process)
     {
-        if (record->event.pressed)
+        if (record->tap.count > 0 &&
+            record->event.pressed &&
+            (keycode & QK_BASIC_MAX) == KC_AGAIN)
+        {
+            // On small boards, Z is a Mod-Tap with Shift, which makes “Redo”
+            // (usually Cmd+Shift+Z) awkward. Putting Cmd+Shift+Z on the first
+            // function layer (in Z's position) solves this, but since this is
+            // also usually a Shift Mod-Tap, and thus only basic keys can be
+            // used, “Again” is used as a stand-in that is replaced here.
+            //
+            if (bgk_is_windows())
+            {
+                tap_code16(C(S(KC_Z)));
+            }
+            else
+            {
+                tap_code16(G(S(KC_Z)));
+            }
+            process = false;
+        }
+        else if (record->event.pressed)
         {
             static bool cursor_vertical = false;
             const uint8_t modifiers = get_mods();

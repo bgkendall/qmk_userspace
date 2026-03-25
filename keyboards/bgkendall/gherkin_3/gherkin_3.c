@@ -164,20 +164,6 @@ bool rgb_matrix_indicators_kb(void)
 #endif // RGB_MATRIX_ENABLE
 
 
-bool process_record_kb(uint16_t keycode, keyrecord_t* record)
-{
-    if (record->tap.count > 0 &&
-        record->event.pressed &&
-        (keycode & QK_BASIC_MAX) == KC_AGAIN)
-    {
-        tap_code16(G(S(KC_Z)));
-        return false;
-    }
-
-    return process_record_user(keycode, record);
-}
-
-
 void keyboard_post_init_kb(void)
 {
 #ifdef CONSOLE_ENABLE
