@@ -1,7 +1,9 @@
 // Copyright 2023 sporkus
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+#include "debug.h"
 #include "keycodes.h"
+#include "rgb_matrix.h"
 
 #include QMK_KEYBOARD_H
 
@@ -47,3 +49,28 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
     [2] =   { ENCODER_CCW_CW(_______, _______), ENCODER_CCW_CW(_______, _______), ENCODER_CCW_CW(_______, _______), ENCODER_CCW_CW(_______, _______) }
 };
 #endif
+
+
+/*****************************************************************************
+ * KEYBOARD INIT                                                             *
+ *****************************************************************************/
+
+void keyboard_post_init_kb(void)
+{
+#ifdef CONSOLE_ENABLE
+    // Enable/disable debugging:
+    debug_enable = true;
+    debug_matrix = true;
+    debug_keyboard = true;
+    debug_mouse = false;
+#endif
+
+#ifdef RGB_MATRIX_ENABLE
+
+    // Turn off lighting:
+    rgb_matrix_disable();
+
+#endif
+
+    keyboard_post_init_user();
+}
