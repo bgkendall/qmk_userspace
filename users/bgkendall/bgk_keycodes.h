@@ -10,9 +10,6 @@
 #include "keycodes.h"
 
 
-// Use "#define BGK_FAVOURITE_SUBSTITUTE <keycode>" to override KC_WFAV
-
-
 // Typographical quotes
 //
 #define BK_LSQUO    RALT(KC_RBRACKET)           // ‘

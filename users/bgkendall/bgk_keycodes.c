@@ -7,6 +7,7 @@
 #include "bgk_keycodes.h"
 #include "bgk_keycommands.h"
 #include "bgk_os_detect.h"
+#include "keycodes.h"
 #include "users/bgkendall/private/texts.h"
 #ifdef BGK_SHIFTED_MOD_TAP_ENABLE
 #   include "bgk_shifted_mod_tap.h"
@@ -29,6 +30,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
 {
     bool process = process_record_keymap(keycode, record);
 
+    if (process)
+    {
+        process = process_key_override(keycode, record);
+    }
+
 #ifdef BGK_SHIFTED_MOD_TAP_ENABLE
     if (process)
     {
@@ -41,63 +47,34 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
         if (record->tap.count > 0 &&
             (keycode & QK_BASIC_MAX) == KC_AGAIN)
         {
+            uint16_t replacement = KC_NO;
+
             // On small boards, Z is a Mod-Tap with Shift, which makes “Redo”
             // (usually Cmd+Shift+Z) awkward. Putting Cmd+Shift+Z on the first
-            // function layer (in Z's position) solves this, but since this is
-            // also usually a Shift Mod-Tap, and thus only basic keys can be
+            // function layer (in Z's position) solves this. However, since this
+            // is also usually a Shift Mod-Tap, and thus only basic keys can be
             // used, “Again” is used as a stand-in that is replaced here.
             //
-            if (!process_key_override(keycode, record))
+            if (bgk_is_windows())
             {
-                // Key Override triggered - do not override the key
-            }
-            else if (record->event.pressed)
-            {
-                if (bgk_is_windows())
-                {
-                    register_code16(C(S(KC_Z)));
-                }
-                else
-                {
-                    register_code16(G(S(KC_Z)));
-                }
+                replacement = C(S(KC_Z));
             }
             else
             {
-                if (bgk_is_windows())
-                {
-                    unregister_code16(C(S(KC_Z)));
-                }
-                else
-                {
-                    unregister_code16(G(S(KC_Z)));
-                }
+                replacement = G(S(KC_Z));
             }
-            process = false;
-        }
-#ifdef BGK_FAVOURITE_SUBSTITUTE
-        else if (record->tap.count > 0 &&
-                 (keycode & QK_BASIC_MAX) == KC_WWW_FAVORITES)
-        {
-            // BGK_FAVOURITE_SUBSTITUTE can be used to override the Browser
-            // Fav. (KC_WFAV) key. This basic key can then be used in a Mod-Tap
-            // *and* a Key Override.
-            //
-            if (!process_key_override(keycode, record))
+
+            if (record->event.pressed)
             {
-                // Key Override triggered - do not override the key
-            }
-            else if (record->event.pressed)
-            {
-                register_code16(BGK_FAVOURITE_SUBSTITUTE);
+                register_code16(replacement);
             }
             else
             {
-                unregister_code16(BGK_FAVOURITE_SUBSTITUTE);
+                unregister_code16(replacement);
             }
+
             process = false;
         }
-#endif // BGK_FAVOURITE_SUBSTITUTE
         else if (record->event.pressed)
         {
             static bool cursor_vertical = false;
