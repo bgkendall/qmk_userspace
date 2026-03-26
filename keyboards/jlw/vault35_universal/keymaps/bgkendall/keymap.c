@@ -51,6 +51,111 @@ const uint16_t PROGMEM encoder_map[][NUM_ENCODERS][NUM_DIRECTIONS] = {
 #endif
 
 
+#ifdef RGB_MATRIX_ENABLE
+
+#include "color.h"
+#include "users/bgkendall/bgk_rgb.h"
+
+enum RGB_STATES
+{
+    RGBS_TRANS = 0,
+    RGBS_OFF,
+    RGBS_WINDOWS,
+    RGBS_LINUX,
+    RGBS_CAPSWORD,
+    RGBS_CAPSLOCK,
+    RGBS_POWERON
+ };
+
+const hsv_t bgk_hsv_states[] = {
+    [RGBS_TRANS]    = { HSV_BLACK },
+    [RGBS_OFF]      = { HSV_BLACK },
+    [RGBS_WINDOWS]  = { HSV_BLUE },
+    [RGBS_LINUX]    = { HSV_YELLOW },
+    [RGBS_CAPSWORD] = { HSV_VIVIDPINK },
+    [RGBS_CAPSLOCK] = { HSV_RED },
+    [RGBS_POWERON]  = { HSV_GREEN }
+};
+
+#define POWER_UP_HUE_STEP (1 << 1)
+
+bool rgb_matrix_indicators_kb(void)
+{
+    if (!rgb_matrix_indicators_user())
+    {
+        return false;
+    }
+
+    static bool powering_up = true;
+
+    uint8_t rgb_state = RGBS_TRANS;
+
+    if (unlikely(powering_up))
+    {
+        static uint8_t os_indication_count = 101;
+        os_indication_count--;
+
+        switch (detected_host_os())
+        {
+            case OS_MACOS:
+            case OS_IOS:
+            {
+                hsv_t hsv = rgb_matrix_config.hsv;
+                if (((hsv.h + POWER_UP_HUE_STEP) % 256) == bgk_hsv_states[RGBS_POWERON].h)
+                {
+                    os_indication_count = 0;
+                }
+                else
+                {
+                    hsv.h += POWER_UP_HUE_STEP;
+                    rgb_matrix_sethsv_noeeprom(hsv.h, hsv.s, hsv.v);
+
+                    return true;
+                }
+                break;
+            }
+            case OS_WINDOWS:
+                rgb_state = RGBS_WINDOWS;
+                break;
+            case OS_LINUX:
+                rgb_state = RGBS_LINUX;
+                break;
+            default:
+                rgb_state = RGBS_POWERON;
+                break;
+        }
+
+        if (os_indication_count == 0)
+        {
+            powering_up = false;
+            rgb_matrix_disable_noeeprom();
+        }
+    }
+    else if (host_keyboard_led_state().caps_lock)
+    {
+        rgb_state = RGBS_CAPSLOCK;
+    }
+    else if (is_caps_word_on())
+    {
+        rgb_state = RGBS_CAPSWORD;
+    }
+
+    if (rgb_state == RGBS_TRANS)
+    {
+        return true;
+    }
+    else
+    {
+        rgb_matrix_sethsv_noeeprom(bgk_hsv_states[rgb_state].h,
+                                   bgk_hsv_states[rgb_state].s,
+                                   bgk_hsv_states[rgb_state].v);
+        return false;
+    }
+}
+
+#endif // RGB_MATRIX_ENABLE
+
+
 /*****************************************************************************
  * KEYBOARD INIT                                                             *
  *****************************************************************************/
@@ -66,10 +171,11 @@ void keyboard_post_init_kb(void)
 #endif
 
 #ifdef RGB_MATRIX_ENABLE
-
-    // Turn off lighting:
-    rgb_matrix_disable();
-
+    rgb_matrix_enable_noeeprom();
+    rgb_matrix_mode_noeeprom(RGB_MATRIX_SOLID_COLOR);
+    rgb_matrix_sethsv_noeeprom(bgk_hsv_states[RGBS_POWERON].h,
+                               bgk_hsv_states[RGBS_POWERON].s,
+                               bgk_hsv_states[RGBS_POWERON].v);
 #endif
 
     keyboard_post_init_user();
