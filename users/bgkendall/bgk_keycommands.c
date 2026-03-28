@@ -64,7 +64,14 @@ bool bgkey_unregister_app_switch_modifier(bool immediate)
 bool bgkey_register_forward_app_switch(void)
 {
     bgkey_register_app_switch_modifier();
-    tap_code16(KC_TAB);
+    register_code(KC_TAB);
+
+    return false;
+}
+
+bool bgkey_unregister_forward_app_switch(void)
+{
+    unregister_code(KC_TAB);
 
     return false;
 }
@@ -75,11 +82,25 @@ bool bgkey_register_backward_app_switch(void)
 
     if (bgk_is_windows())
     {
-        tap_code16(S(KC_TAB));
+        register_code16(S(KC_TAB));
     }
     else
     {
-        tap_code16(KC_GRAVE);
+        register_code(KC_GRAVE);
+    }
+
+    return false;
+}
+
+bool bgkey_unregister_backward_app_switch(void)
+{
+    if (bgk_is_windows())
+    {
+        unregister_code16(S(KC_TAB));
+    }
+    else
+    {
+        unregister_code(KC_GRAVE);
     }
 
     return false;

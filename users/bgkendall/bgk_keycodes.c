@@ -237,6 +237,24 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
                 break;
         }
     }
+    else if (process && !record->event.pressed)
+    {
+        switch (keycode)
+        {
+            case BK_APP_BACKWARD:
+            {
+                process = bgkey_unregister_backward_app_switch();
+                break;
+            }
+            case BK_APP_FORWARD:
+            {
+                process = bgkey_unregister_forward_app_switch();
+                break;
+            }
+            default:
+                break;
+        }
+    }
 
     return process;
 }
