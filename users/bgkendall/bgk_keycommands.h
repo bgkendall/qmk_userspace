@@ -26,3 +26,5 @@ bool bgkey_unregister_app_switch_modifier(bool immediate);
 bool bgkey_register_forward_app_switch(void);
 
 bool bgkey_register_backward_app_switch(void);
+
+bool bgkey_thorn(void);

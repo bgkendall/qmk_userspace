@@ -96,6 +96,62 @@ layer_state_t layer_state_set_user(layer_state_t state)
 }
 
 
+/*****************************************************************************
+ * THORN                                                                     *
+ *****************************************************************************/
+
+bool bgkey_thorn(void)
+{
+    // “Th” key
+    //
+    const bool capsWordOn =
+#ifdef CAPS_WORD_ENABLE
+        is_caps_word_on();
+#else
+        false;
+#endif
+    const uint8_t modifiers = get_mods();
+
+    if (capsWordOn)
+    {
+        add_weak_mods(MOD_BIT(KC_LSFT));
+    }
+
+    tap_code(KC_T);
+
+    if (capsWordOn)
+    {
+        add_weak_mods(MOD_BIT(KC_LSFT));
+    }
+    else
+    {
+        if (modifiers & MOD_BIT_LSHIFT)
+        {
+            unregister_code(KC_LSFT);
+        }
+        if (modifiers & MOD_BIT_RSHIFT)
+        {
+            unregister_code(KC_RSFT);
+        }
+    }
+
+    tap_code(KC_H);
+
+    if (!capsWordOn)
+    {
+        if (modifiers & MOD_BIT_LSHIFT)
+        {
+            register_code(KC_LSFT);
+        }
+        if (modifiers & MOD_BIT_RSHIFT)
+        {
+            register_code(KC_RSFT);
+        }
+    }
+
+    return false;
+}
+
 
 /*****************************************************************************
  * CAPS WORD                                                                 *
@@ -106,7 +162,7 @@ layer_state_t layer_state_set_user(layer_state_t state)
 #ifdef VIAL_TAP_DANCE_ENTRIES
 #   define BGK_TAP_DANCE_ENTRIES VIAL_TAP_DANCE_ENTRIES
 #else
-#   define BGK_TAP_DANCE_ENTRIES 32
+#   define BGK_TAP_DANCE_ENTRIES (QK_TAP_DANCE_MAX - QK_TAP_DANCE + 1)
 #endif
 
 bool caps_word_press_user(uint16_t keycode)

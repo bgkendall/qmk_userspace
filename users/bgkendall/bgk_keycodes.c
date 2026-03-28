@@ -105,7 +105,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
     if (process && record->event.pressed)
     {
         static bool cursor_vertical = false;
-        const uint8_t modifiers = get_mods();
 
         switch (keycode)
         {
@@ -134,6 +133,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
             }
             case BK_BGK:
             {
+                const uint8_t modifiers = get_mods();
                 clear_mods();
 #ifndef NO_ACTION_ONESHOT
                 clear_oneshot_mods();
@@ -230,55 +230,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
                 process = false;
                 break;
             case BK_THORN:
-            {
-                // “Th” key
-                //
-                const bool capsWordOn =
-#ifdef CAPS_WORD_ENABLE
-                                is_caps_word_on();
-#else
-                                false;
-#endif
-
-                if (capsWordOn)
-                {
-                    add_weak_mods(MOD_BIT(KC_LSFT));
-                }
-
-                tap_code(KC_T);
-
-                if (capsWordOn)
-                {
-                    add_weak_mods(MOD_BIT(KC_LSFT));
-                }
-                else
-                {
-                    if (modifiers & MOD_BIT_LSHIFT)
-                    {
-                        unregister_code(KC_LSFT);
-                    }
-                    if (modifiers & MOD_BIT_RSHIFT)
-                    {
-                        unregister_code(KC_RSFT);
-                    }
-                }
-
-                tap_code(KC_H);
-
-                if (!capsWordOn)
-                {
-                    if (modifiers & MOD_BIT_LSHIFT)
-                    {
-                        register_code(KC_LSFT);
-                    }
-                    if (modifiers & MOD_BIT_RSHIFT)
-                    {
-                        register_code(KC_RSFT);
-                    }
-                }
-                process = false;
+                // Th
+                process = bgkey_thorn();
                 break;
-            }
             default:
                 break;
         }
