@@ -45,32 +45,59 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
     if (process)
     {
         if (record->tap.count > 0 &&
-            (keycode & QK_BASIC_MAX) == KC_AGAIN)
+            ((keycode & QK_BASIC_MAX) == KC_AGAIN
+#ifndef BGK_NO_KP_COMMA_OVERRIDE
+             || (keycode & QK_BASIC_MAX) == KC_KP_COMMA
+#endif
+            )
+           )
         {
             uint16_t replacement = KC_NO;
 
-            // On small boards, Z is a Mod-Tap with Shift, which makes “Redo”
-            // (usually Cmd+Shift+Z) awkward. Putting Cmd+Shift+Z on the first
-            // function layer (in Z's position) solves this. However, since this
-            // is also usually a Shift Mod-Tap, and thus only basic keys can be
-            // used, “Again” is used as a stand-in that is replaced here.
-            //
-            if (bgk_is_windows())
+            switch (keycode & QK_BASIC_MAX)
             {
-                replacement = C(S(KC_Z));
-            }
-            else
-            {
-                replacement = G(S(KC_Z));
+                case KC_AGAIN:
+                {
+                    // On small boards, Z is a Mod-Tap with Shift, which makes “Redo”
+                    // (usually Cmd+Shift+Z) awkward. Putting Cmd+Shift+Z on the first
+                    // function layer (in Z's position) solves this. However, since this
+                    // is also usually a Shift Mod-Tap, and thus only basic keys can be
+                    // used, “Again” is used as a stand-in that is replaced here.
+                    //
+                    if (bgk_is_windows())
+                    {
+                        replacement = C(S(KC_Z));
+                    }
+                    else
+                    {
+                        replacement = G(S(KC_Z));
+                    }
+                    break;
+                }
+                case KC_KP_COMMA:
+                {
+                    // Curly close single quote is often in a location where a
+                    // Mod-Tap is also desirable. Override the rarely used basic
+                    // key code Keypad Comma with Right Option-Shift-Right Bracket.
+                    // This can be disabled with BGK_NO_KP_COMMA_OVERRIDE.
+                    //
+                    replacement = RSA(KC_RIGHT_BRACKET);
+                    break;
+                }
+                default:
+                    break;
             }
 
-            if (record->event.pressed)
+            if (replacement != KC_NO)
             {
-                register_code16(replacement);
-            }
-            else
-            {
-                unregister_code16(replacement);
+                if (record->event.pressed)
+                {
+                    register_code16(replacement);
+                }
+                else
+                {
+                    unregister_code16(replacement);
+                }
             }
 
             process = false;
