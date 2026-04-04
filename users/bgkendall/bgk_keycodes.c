@@ -48,6 +48,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
 #ifndef BGK_NO_KP_COMMA_OVERRIDE
          || (keycode & QK_BASIC_MAX) == KC_KP_COMMA
 #endif
+#ifndef BGK_NO_KC_CALC_OVERRIDE
+         || (keycode & QK_BASIC_MAX) == KC_CALCULATOR
+#endif
         )
        )
     {
@@ -81,6 +84,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
                 // This can be disabled with BGK_NO_KP_COMMA_OVERRIDE.
                 //
                 replacement = RSA(KC_RIGHT_BRACKET);
+                break;
+            }
+            case KC_CALCULATOR:
+            {
+                // The thousands shortcut is often in a location where a
+                // Mod-Tap is also desirable. Override the rarely used basic
+                // key code Calculator with BK_000.
+                // This can be disabled with BGK_NO_KC_CALC_OVERRIDE.
+                //
+                keycode = BK_000;
                 break;
             }
             default:
