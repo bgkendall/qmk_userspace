@@ -4,6 +4,68 @@
   "productId": "0xA4F9",
   "matrix": {"rows": 8, "cols": 6},
   "lighting": "vialrgb",
+  "customKeycodes": [
+    {
+      "name": "BK_000",
+      "title": "000",
+      "shortName": "000"
+    },
+    {
+      "name": "BK_BGK",
+      "title": "Barnaby",
+      "shortName": "BGK"
+    },
+    {
+      "name": "BK_APP_BACKWARD",
+      "title": "Previous Application/Previous Window",
+      "shortName": "App\nBack"
+    },
+    {
+      "name": "BK_APP_FORWARD",
+      "title": "Next Application",
+      "shortName": "App\nFwd"
+    },
+    {
+      "name": "BK_TIMES",
+      "title": "Multiplication Sign",
+      "shortName": "×"
+    },
+    {
+      "name": "BK_LOCK",
+      "title": "Lock this layer",
+      "shortName": "Layer\nLock"
+    },
+    {
+      "name": "BK_ELEFT",
+      "title": "Encoder Cursor Left",
+      "shortName": "Enc.\nLeft"
+    },
+    {
+      "name": "BK_ERIGHT",
+      "title": "Encoder Cursor Right",
+      "shortName": "Enc.\nRight"
+    },
+    {
+      "name": "BK_EDOWN",
+      "title": "Encoder Cursor Down",
+      "shortName": "Enc.\nDown"
+    },
+    {
+      "name": "BK_EUP",
+      "title": "Encoder Cursor Up",
+      "shortName": "Enc.\nUp"
+    },
+    {
+      "name": "BK_EFLIP",
+      "title": "Encoder Cursor Direction Flip",
+      "shortName": "Enc.\nFlip"
+    },
+    {
+      "name": "BK_THORN",
+      "title": "Thorn (Th)",
+      "shortName": "Þ"
+    }
+  ],
   "layouts": {
     "labels": [["Layout", "MIT (1x2u)", "Grid (2x1u)", "2x2u", "3x3u"]],
     "keymap": [
