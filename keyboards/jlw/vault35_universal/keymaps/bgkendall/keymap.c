@@ -87,6 +87,7 @@ bool rgb_matrix_indicators_kb(void)
     }
 
     static bool powering_up = true;
+    static bool status_on = false;
 
     uint8_t rgb_state = RGBS_TRANS;
 
@@ -127,17 +128,24 @@ bool rgb_matrix_indicators_kb(void)
 
         if (os_indication_count == 0)
         {
+            rgb_state = RGBS_OFF;
             powering_up = false;
-            rgb_matrix_disable_noeeprom();
         }
     }
     else if (host_keyboard_led_state().caps_lock)
     {
         rgb_state = RGBS_CAPSLOCK;
+        status_on = true;
     }
     else if (is_caps_word_on())
     {
         rgb_state = RGBS_CAPSWORD;
+        status_on = true;
+    }
+    else if (status_on)
+    {
+        rgb_state = RGBS_OFF;
+        status_on = false;
     }
 
     if (rgb_state == RGBS_TRANS)
