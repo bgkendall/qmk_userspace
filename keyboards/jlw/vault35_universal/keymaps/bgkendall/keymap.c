@@ -77,12 +77,13 @@ const hsv_t bgk_hsv_states[] = {
     [RGBS_CAPSLOCK] = { HSV_RED },
     [RGBS_POWERON]  = { HSV_GREEN },
     [RGBS_LAYERS+0] = { HSV_BLACK },
-    [RGBS_LAYERS+1] = { HSV_RED },
-    [RGBS_LAYERS+2] = { HSV_GREEN },
-    [RGBS_LAYERS+3] = { HSV_ORANGE },
-    [RGBS_LAYERS+4] = { HSV_YELLOW },
-    [RGBS_LAYERS+5] = { HSV_GREEN },
-    [RGBS_LAYERS+6] = { HSV_BLUE }
+    [RGBS_LAYERS+1] = { HSV_BLACK },
+    [RGBS_LAYERS+2] = { HSV_ORANGERED },
+    [RGBS_LAYERS+3] = { HSV_CYAN },
+    [RGBS_LAYERS+4] = { HSV_GREEN },
+    [RGBS_LAYERS+5] = { HSV_MAGENTA },
+    [RGBS_LAYERS+6] = { HSV_BLACK },
+    [RGBS_LAYERS+7] = { HSV_SPRINGGREEN }
 };
 
 #define POWER_UP_HUE_STEP (1 << 1)
