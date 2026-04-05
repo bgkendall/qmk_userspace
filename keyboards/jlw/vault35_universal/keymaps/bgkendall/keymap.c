@@ -273,11 +273,9 @@ void keyboard_post_init_kb(void)
     // Enable/disable debugging:
     debug_enable = true;
     debug_matrix = true;
-    debug_keyboard = false;
+    debug_keyboard = true;
     debug_mouse = false;
 #endif
-
-dprint("INIT!\n");
 
 #ifdef RGB_MATRIX_ENABLE
     store_rgb_state();
