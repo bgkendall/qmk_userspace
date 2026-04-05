@@ -64,7 +64,9 @@ enum RGB_STATES
     RGBS_LINUX,
     RGBS_CAPSWORD,
     RGBS_CAPSLOCK,
-    RGBS_POWERON
+    RGBS_POWERON,
+    RGBS_L1,
+    RGBS_L2
  };
 
 const hsv_t bgk_hsv_states[] = {
@@ -74,10 +76,41 @@ const hsv_t bgk_hsv_states[] = {
     [RGBS_LINUX]    = { HSV_YELLOW },
     [RGBS_CAPSWORD] = { HSV_VIVIDPINK },
     [RGBS_CAPSLOCK] = { HSV_RED },
-    [RGBS_POWERON]  = { HSV_GREEN }
+    [RGBS_POWERON]  = { HSV_GREEN },
+    [RGBS_L1]       = { HSV_ORANGERED },
+    [RGBS_L2]       = { HSV_CYAN }
 };
 
 #define POWER_UP_HUE_STEP (1 << 1)
+
+// bool led_update_kb(led_t led_state)
+// {
+//     rgb_matrix_enable_noeeprom();
+//     return led_update_user(led_state);
+// }
+//
+// layer_state_t layer_state_set_kb(layer_state_t state)
+// {
+//     rgb_matrix_enable_noeeprom();
+//     return layer_state_set_user(state);
+// }
+//
+// void caps_word_set_user(bool active)
+// {
+//     if (active)
+//     {
+//         rgb_matrix_enable_noeeprom();
+//     }
+// }
+
+typedef struct PACKED rgblight_state
+{
+    bool    dirty : 1;
+    uint8_t mode : 7;
+    hsv_t   hsv;
+} rgblight_state_t;
+
+rgblight_state_t prior_rgblight_state;
 
 bool rgb_matrix_indicators_kb(void)
 {
@@ -87,7 +120,6 @@ bool rgb_matrix_indicators_kb(void)
     }
 
     static bool powering_up = true;
-    static bool status_on = false;
 
     uint8_t rgb_state = RGBS_TRANS;
 
@@ -95,6 +127,16 @@ bool rgb_matrix_indicators_kb(void)
     {
         static uint8_t os_indication_count = 101;
         os_indication_count--;
+
+        if (!prior_rgblight_state.dirty)
+        {
+            prior_rgblight_state.dirty = true;
+
+            rgb_matrix_mode_noeeprom(RGB_MATRIX_SOLID_COLOR);
+            rgb_matrix_sethsv_noeeprom(bgk_hsv_states[RGBS_POWERON].h,
+                                       bgk_hsv_states[RGBS_POWERON].s,
+                                       bgk_hsv_states[RGBS_POWERON].v);
+        }
 
         switch (detected_host_os())
         {
@@ -135,25 +177,52 @@ bool rgb_matrix_indicators_kb(void)
     else if (host_keyboard_led_state().caps_lock)
     {
         rgb_state = RGBS_CAPSLOCK;
-        status_on = true;
     }
     else if (is_caps_word_on())
     {
         rgb_state = RGBS_CAPSWORD;
-        status_on = true;
     }
-    else if (status_on)
+    else if (get_highest_layer(layer_state) == 2)
+    {
+        rgb_state = RGBS_L1;
+    }
+    else if (get_highest_layer(layer_state) == 4)
+    {
+        rgb_state = RGBS_L2;
+    }
+    else
     {
         rgb_state = RGBS_OFF;
-        status_on = false;
     }
 
     if (rgb_state == RGBS_TRANS)
     {
         return true;
     }
+    else if (rgb_state == RGBS_OFF)
+    {
+        if (prior_rgblight_state.dirty)
+        {
+            prior_rgblight_state.dirty = false;
+
+            rgb_matrix_mode_noeeprom(prior_rgblight_state.mode);
+            rgb_matrix_sethsv_noeeprom(prior_rgblight_state.hsv.h,
+                                       prior_rgblight_state.hsv.s,
+                                       prior_rgblight_state.hsv.v);
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
     else
     {
+        prior_rgblight_state.dirty = true;
+        prior_rgblight_state.mode  = rgb_matrix_get_mode();
+        prior_rgblight_state.hsv   = rgb_matrix_get_hsv();
+
+        rgb_matrix_mode_noeeprom(RGB_MATRIX_SOLID_COLOR);
         rgb_matrix_sethsv_noeeprom(bgk_hsv_states[rgb_state].h,
                                    bgk_hsv_states[rgb_state].s,
                                    bgk_hsv_states[rgb_state].v);
@@ -180,10 +249,9 @@ void keyboard_post_init_kb(void)
 
 #ifdef RGB_MATRIX_ENABLE
     rgb_matrix_enable_noeeprom();
-    rgb_matrix_mode_noeeprom(RGB_MATRIX_SOLID_COLOR);
-    rgb_matrix_sethsv_noeeprom(bgk_hsv_states[RGBS_POWERON].h,
-                               bgk_hsv_states[RGBS_POWERON].s,
-                               bgk_hsv_states[RGBS_POWERON].v);
+    prior_rgblight_state.dirty = false;
+    prior_rgblight_state.mode  = rgb_matrix_get_mode();
+    prior_rgblight_state.hsv   = rgb_matrix_get_hsv();
 #endif
 
     keyboard_post_init_user();
