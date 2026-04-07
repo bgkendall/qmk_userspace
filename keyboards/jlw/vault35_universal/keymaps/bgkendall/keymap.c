@@ -1,6 +1,7 @@
 // Copyright 2023 sporkus
 // SPDX-License-Identifier: GPL-2.0-or-later
 
+#include "bgk_rgb.h"
 #include "debug.h"
 #include "keycodes.h"
 #include "rgb_matrix.h"
@@ -110,39 +111,6 @@ const rgb_t bgk_rgb_states[] = {
 #define POWER_UP_HUE_STEP (1 << 1)
 
 
-void set_rgb_matrix_state(bool on)
-{
-    static bool is_state_overriden = false;
-    static bool was_matrix_enabled = false;
-
-if (on) print("> ON!"); else print("> OFF!");
-printf(" is_state_overriden: %d", is_state_overriden);
-printf(" was_matrix_enabled: %d\n", was_matrix_enabled);
-
-    if (on)
-    {
-        if (!is_state_overriden)
-        {
-            was_matrix_enabled = rgb_matrix_is_enabled();
-            is_state_overriden = true;
-        }
-        if (!rgb_matrix_is_enabled())
-        {
-            rgb_matrix_enable_noeeprom();
-        }
-    }
-    else
-    {
-        rgb_matrix_reload_from_eeprom();
-        is_state_overriden = false;
-    }
-
-if (on) print("< ON!"); else print("< OFF!");
-printf(" is_state_overriden: %d", is_state_overriden);
-printf(" was_matrix_enabled: %d\n", was_matrix_enabled);
-
-}
-
 rgb_t get_layer_rgb(uint8_t layer)
 {
     rgb_t rgb = { RGB_OFF };
@@ -157,23 +125,14 @@ rgb_t get_layer_rgb(uint8_t layer)
 
 bool is_layer_indicated(layer_state_t state)
 {
-    rgb_t colour = get_layer_rgb(get_highest_layer(state));
-
-    if (colour.r == 0 && colour.g == 0 && colour.b == 0)
-    {
-        return false;
-    }
-    else
-    {
-        return true;
-    }
+    return bgkrgb_is_colour(get_layer_rgb(get_highest_layer(state)));
 }
 
 bool led_update_kb(led_t led_state)
 {
     if (led_state.caps_lock)
     {
-        set_rgb_matrix_state(true);
+        rgb_matrix_enable_noeeprom();
     }
     return led_update_user(led_state);
 }
@@ -182,7 +141,7 @@ layer_state_t layer_state_set_kb(layer_state_t state)
 {
     if (is_layer_indicated(state))
     {
-        set_rgb_matrix_state(true);
+        rgb_matrix_enable_noeeprom();
     }
     return layer_state_set_user(state);
 }
@@ -191,7 +150,7 @@ void caps_word_set_user(bool active)
 {
     if (active)
     {
-        set_rgb_matrix_state(true);
+        rgb_matrix_enable_noeeprom();
     }
 }
 
@@ -203,7 +162,7 @@ bool rgb_matrix_indicators_advanced_kb(uint8_t led_min, uint8_t led_max)
     }
 
     static bool powering_up = true;
-    static bool is_state_overriden = false;
+    static bool indicator_on = false;
 
     uint8_t rgb_state = RGBS_TRANS;
 
@@ -265,7 +224,7 @@ print("Caps word\n");
 print("Layer\n");
         rgb_state = RGBS_LAYERS+get_highest_layer(layer_state);
     }
-    else if (is_state_overriden)
+    else if (indicator_on)
     {
 print("Off\n");
         rgb_state = RGBS_OFF;
@@ -278,14 +237,14 @@ print("Off\n");
     else if (rgb_state == RGBS_OFF)
     {
 print("Turning off\n");
-        is_state_overriden = false;
-        set_rgb_matrix_state(false);
+        indicator_on = false;
+        rgb_matrix_reload_from_eeprom();
         return false;
     }
     else
     {
-        is_state_overriden = true;
 printf("Setting colour %d\n", bgk_rgb_states[rgb_state].r);
+        indicator_on = true;
         rgb_matrix_set_color_all(bgk_rgb_states[rgb_state].r,
                                  bgk_rgb_states[rgb_state].g,
                                  bgk_rgb_states[rgb_state].b);
@@ -311,7 +270,7 @@ void keyboard_post_init_kb(void)
 #endif
 
 #ifdef RGB_MATRIX_ENABLE
-    set_rgb_matrix_state(true);
+    rgb_matrix_enable_noeeprom();
 #endif
 
     keyboard_post_init_user();
