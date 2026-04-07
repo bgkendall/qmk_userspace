@@ -30,14 +30,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [1] = LAYOUT_ortho(
          _______,  _______,  _______,  _______,  _______,   _______, _______,  KC_7,     KC_8,     KC_9,     KC_0,
          _______,  _______,  _______,  _______,  _______,   _______, _______,  KC_4,     KC_5,     KC_6,     _______,
-         _______,  _______,  _______,  _______,  _______,   QK_BOOT, _______,  KC_1,     KC_2,     KC_3,     _______,
+         _______,  _______,  _______,  _______,  _______,   _______, _______,  KC_1,     KC_2,     KC_3,     _______,
                                        _______,  _______,            _______,  _______, _______
     ),
 
     [2] = LAYOUT_ortho(
          _______,  _______,  _______,  _______,  _______,   _______, _______,  _______,   _______,   _______,    _______,
          _______,  _______,  _______,  _______,  _______,   _______, KC_LEFT,  KC_DOWN,   KC_UP,     KC_LEFT,    _______,
-         _______,  _______,  _______,  _______,  _______,   QK_BOOT, _______,  _______,   _______,   _______,    _______,
+         _______,  _______,  _______,  _______,  _______,   _______, _______,  _______,   _______,   _______,    _______,
                                        _______,  _______,            _______,  _______, _______
     )
 };
@@ -60,6 +60,7 @@ enum RGB_STATES
 {
     RGBS_TRANS = 0,
     RGBS_OFF,
+    RGBS_MAC,
     RGBS_WINDOWS,
     RGBS_LINUX,
     RGBS_CAPSWORD,
@@ -69,129 +70,167 @@ enum RGB_STATES
 };
 
 const hsv_t bgk_hsv_states[] = {
-    [RGBS_TRANS]    = { HSV_BLACK },
-    [RGBS_OFF]      = { HSV_BLACK },
+    [RGBS_TRANS]    = { HSV_OFF },
+    [RGBS_OFF]      = { HSV_OFF },
+    [RGBS_MAC]      = { HSV_WHITE },
     [RGBS_WINDOWS]  = { HSV_BLUE },
     [RGBS_LINUX]    = { HSV_YELLOW },
     [RGBS_CAPSWORD] = { HSV_VIVIDPINK },
     [RGBS_CAPSLOCK] = { HSV_RED },
     [RGBS_POWERON]  = { HSV_GREEN },
-    [RGBS_LAYERS+0] = { HSV_BLACK },
-    [RGBS_LAYERS+1] = { HSV_BLACK },
+    [RGBS_LAYERS+0] = { HSV_OFF },
+    [RGBS_LAYERS+1] = { HSV_OFF },
     [RGBS_LAYERS+2] = { HSV_ORANGERED },
     [RGBS_LAYERS+3] = { HSV_CYAN },
     [RGBS_LAYERS+4] = { HSV_GREEN },
     [RGBS_LAYERS+5] = { HSV_MAGENTA },
-    [RGBS_LAYERS+6] = { HSV_BLACK },
+    [RGBS_LAYERS+6] = { HSV_OFF },
     [RGBS_LAYERS+7] = { HSV_SPRINGGREEN }
+};
+
+const rgb_t bgk_rgb_states[] = {
+    [RGBS_TRANS]    = { RGB_OFF },
+    [RGBS_OFF]      = { RGB_OFF },
+    [RGBS_MAC]      = { RGB_WHITE },
+    [RGBS_WINDOWS]  = { RGB_BLUE },
+    [RGBS_LINUX]    = { RGB_YELLOW },
+    [RGBS_CAPSWORD] = { RGB_VIVIDPINK },
+    [RGBS_CAPSLOCK] = { RGB_RED },
+    [RGBS_POWERON]  = { RGB_GREEN },
+    [RGBS_LAYERS+0] = { RGB_OFF },
+    [RGBS_LAYERS+1] = { RGB_OFF },
+    [RGBS_LAYERS+2] = { RGB_ORANGERED },
+    [RGBS_LAYERS+3] = { RGB_CYAN },
+    [RGBS_LAYERS+4] = { RGB_GREEN },
+    [RGBS_LAYERS+5] = { RGB_MAGENTA },
+    [RGBS_LAYERS+6] = { RGB_OFF },
+    [RGBS_LAYERS+7] = { RGB_SPRINGGREEN }
 };
 
 #define POWER_UP_HUE_STEP (1 << 1)
 
 
-typedef struct PACKED rgblight_state
+void set_rgb_matrix_state(bool on)
 {
-    bool    dirty : 1;
-    bool    enabled : 1;
-    uint8_t mode : 6;
-    hsv_t   hsv;
-} rgblight_state_t;
+    static bool is_state_overriden = false;
+    static bool was_matrix_enabled = false;
 
-rgblight_state_t prior_rgblight_state;
+if (on) print("> ON!"); else print("> OFF!");
+printf(" is_state_overriden: %d", is_state_overriden);
+printf(" was_matrix_enabled: %d\n", was_matrix_enabled);
 
-void store_rgb_state(void)
-{
-    prior_rgblight_state.dirty = true;
-    prior_rgblight_state.enabled = rgb_matrix_is_enabled();
-    prior_rgblight_state.mode = rgb_matrix_get_mode();
-    prior_rgblight_state.hsv = rgb_matrix_get_hsv();
+    if (on)
+    {
+        if (!is_state_overriden)
+        {
+            was_matrix_enabled = rgb_matrix_is_enabled();
+            is_state_overriden = true;
+        }
+        if (!rgb_matrix_is_enabled())
+        {
+            rgb_matrix_enable_noeeprom();
+        }
+    }
+    else
+    {
+        rgb_matrix_reload_from_eeprom();
+        is_state_overriden = false;
+    }
+
+if (on) print("< ON!"); else print("< OFF!");
+printf(" is_state_overriden: %d", is_state_overriden);
+printf(" was_matrix_enabled: %d\n", was_matrix_enabled);
+
 }
 
-void restore_rgb_state(void)
+rgb_t get_layer_rgb(uint8_t layer)
 {
-    rgb_matrix_sethsv_noeeprom(prior_rgblight_state.hsv.h,
-                               prior_rgblight_state.hsv.s,
-                               prior_rgblight_state.hsv.v);
-    rgb_matrix_mode_noeeprom(prior_rgblight_state.mode);
-    if (!prior_rgblight_state.enabled)
+    rgb_t rgb = { RGB_OFF };
+
+    if (layer <= 7)
     {
-        rgb_matrix_disable();
+        rgb = bgk_rgb_states[RGBS_LAYERS+layer];
     }
-    prior_rgblight_state.dirty = false;
+
+    return rgb;
+}
+
+bool is_layer_indicated(layer_state_t state)
+{
+    rgb_t colour = get_layer_rgb(get_highest_layer(state));
+
+    if (colour.r == 0 && colour.g == 0 && colour.b == 0)
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
 }
 
 bool led_update_kb(led_t led_state)
 {
-    if (led_state.caps_lock && !rgb_matrix_is_enabled())
+    if (led_state.caps_lock)
     {
-        store_rgb_state();
-        rgb_matrix_enable_noeeprom();
+        set_rgb_matrix_state(true);
     }
     return led_update_user(led_state);
 }
 
 layer_state_t layer_state_set_kb(layer_state_t state)
 {
-    if (!rgb_matrix_is_enabled())
+    if (is_layer_indicated(state))
     {
-        store_rgb_state();
-        rgb_matrix_enable_noeeprom();
+        set_rgb_matrix_state(true);
     }
     return layer_state_set_user(state);
 }
 
 void caps_word_set_user(bool active)
 {
-    if (active && !rgb_matrix_is_enabled())
+    if (active)
     {
-        store_rgb_state();
-        rgb_matrix_enable_noeeprom();
+        set_rgb_matrix_state(true);
     }
 }
 
-bool rgb_matrix_indicators_kb(void)
+bool rgb_matrix_indicators_advanced_kb(uint8_t led_min, uint8_t led_max)
 {
-    if (!rgb_matrix_indicators_user())
+    if (!rgb_matrix_indicators_advanced_user(led_min, led_max))
     {
         return false;
     }
 
     static bool powering_up = true;
+    static bool is_state_overriden = false;
 
     uint8_t rgb_state = RGBS_TRANS;
 
     if (unlikely(powering_up))
     {
-        static uint8_t os_indication_count = 101;
+print("Powering up\n");
+        static uint8_t os_indication_count = 255;
         os_indication_count--;
-
-        if (!prior_rgblight_state.dirty)
-        {
-            prior_rgblight_state.dirty = true;
-
-            rgb_matrix_mode_noeeprom(RGB_MATRIX_SOLID_COLOR);
-            rgb_matrix_sethsv_noeeprom(bgk_hsv_states[RGBS_POWERON].h,
-                                       bgk_hsv_states[RGBS_POWERON].s,
-                                       bgk_hsv_states[RGBS_POWERON].v);
-        }
 
         switch (detected_host_os())
         {
             case OS_MACOS:
             case OS_IOS:
             {
-                hsv_t hsv = rgb_matrix_config.hsv;
-                if (((hsv.h + POWER_UP_HUE_STEP) % 256) == bgk_hsv_states[RGBS_POWERON].h)
-                {
-                    os_indication_count = 0;
-                }
-                else
-                {
-                    hsv.h += POWER_UP_HUE_STEP;
-                    rgb_matrix_sethsv_noeeprom(hsv.h, hsv.s, hsv.v);
-
-                    return true;
-                }
+                rgb_state = RGBS_MAC;
+//                 hsv_t hsv = rgb_matrix_config.hsv;
+//                 if (((hsv.h + POWER_UP_HUE_STEP) % 256) == bgk_hsv_states[RGBS_POWERON].h)
+//                 {
+//                     os_indication_count = 0;
+//                 }
+//                 else
+//                 {
+//                     hsv.h += POWER_UP_HUE_STEP;
+//                     rgb_matrix_sethsv_noeeprom(hsv.h, hsv.s, hsv.v);
+//
+//                     return true;
+//                 }
                 break;
             }
             case OS_WINDOWS:
@@ -213,50 +252,43 @@ bool rgb_matrix_indicators_kb(void)
     }
     else if (host_keyboard_led_state().caps_lock)
     {
+print("Caps lock\n");
         rgb_state = RGBS_CAPSLOCK;
     }
     else if (is_caps_word_on())
     {
+print("Caps word\n");
         rgb_state = RGBS_CAPSWORD;
     }
-    else if (get_highest_layer(layer_state) < RGBS_LAYERS+6 &&
-             bgk_hsv_states[RGBS_LAYERS+get_highest_layer(layer_state)].v != 0)
+    else if (is_layer_indicated(layer_state))
     {
+print("Layer\n");
         rgb_state = RGBS_LAYERS+get_highest_layer(layer_state);
     }
-    else if (prior_rgblight_state.dirty)
+    else if (is_state_overriden)
     {
+print("Off\n");
         rgb_state = RGBS_OFF;
     }
 
     if (rgb_state == RGBS_TRANS)
     {
-        return true;
+       return true;
     }
     else if (rgb_state == RGBS_OFF)
     {
-        restore_rgb_state();
+print("Turning off\n");
+        is_state_overriden = false;
+        set_rgb_matrix_state(false);
         return false;
     }
     else
     {
-        if (!prior_rgblight_state.dirty)
-        {
-            store_rgb_state();
-        }
-
-        if (rgb_matrix_get_mode() != RGB_MATRIX_SOLID_COLOR)
-        {
-            rgb_matrix_mode_noeeprom(RGB_MATRIX_SOLID_COLOR);
-        }
-
-        if (rgb_matrix_get_hue() != bgk_hsv_states[rgb_state].h)
-        {
-            rgb_matrix_sethsv_noeeprom(bgk_hsv_states[rgb_state].h,
-                                       bgk_hsv_states[rgb_state].s,
-                                       bgk_hsv_states[rgb_state].v);
-        }
-
+        is_state_overriden = true;
+printf("Setting colour %d\n", bgk_rgb_states[rgb_state].r);
+        rgb_matrix_set_color_all(bgk_rgb_states[rgb_state].r,
+                                 bgk_rgb_states[rgb_state].g,
+                                 bgk_rgb_states[rgb_state].b);
         return false;
     }
 }
@@ -279,8 +311,7 @@ void keyboard_post_init_kb(void)
 #endif
 
 #ifdef RGB_MATRIX_ENABLE
-    store_rgb_state();
-    rgb_matrix_enable_noeeprom();
+    set_rgb_matrix_state(true);
 #endif
 
     keyboard_post_init_user();
