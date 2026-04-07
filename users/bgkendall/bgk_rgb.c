@@ -6,9 +6,41 @@
 //  © 2021 Barnaby Kendall. All rights reserved.
 //
 
-#ifdef RGBLIGHT_LAYERS
-
 #include "bgk_rgb.h"
+
+bool bgkrgb_is_colour(rgb_t rgb)
+{
+    return !(rgb.r == 0 && rgb.g == 0 && rgb.b == 0);
+}
+
+#ifdef RGB_MATRIX_ENABLE
+
+// Replace the standard rgb_matrix_toggle() with a function that will toggle
+// based on the *EEPROM* RGB state rather than just the live state. This allows
+// RGB effects to be toggled even when the matrix is on for status indication.
+//
+void bgkrgb_matrix_toggle(void)
+{
+    rgb_config_t eeprom_config;
+    eeconfig_read_rgb_matrix(&eeprom_config);
+
+    if (eeprom_config.enable)
+    {
+        // TODO: Can we determine here whether the light is currently on for
+        // status indication and just turn off the flag in EEPROM???
+        rgb_matrix_disable();
+    }
+    else
+    {
+        rgb_matrix_enable();
+    }
+
+    dprintf("rgb matrix toggle [EEPROM]: rgb_matrix_config.enable = %u\n", rgb_matrix_config.enable);
+}
+
+#endif // RGB_MATRIX_ENABLE
+
+#ifdef RGBLIGHT_LAYERS
 
 
 const rgblight_segment_t PROGMEM bgkrgb_black_layer[]       = BGKRGB_ALL(HSV_BLACK);

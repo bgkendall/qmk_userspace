@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "color.h"
+#include "quantum.h"
 
 #define HSV_VIVIDPINK           0, 224, 255
 #define HSV_ORANGERED           9, 255, 255
@@ -16,12 +16,16 @@
 #define RGB_VIVIDPINK         255,  31,  30
 #define RGB_ORANGERED         255,  54,   0
 
-bool bgkrgb_is_colour(rgb_t rgb) { return !(rgb.r == 0 && rgb.g == 0 && rgb.b == 0); }
+bool bgkrgb_is_colour(rgb_t rgb);
 
+
+#ifdef RGB_MATRIX_ENABLE
+
+void bgkrgb_matrix_toggle(void);
+
+#endif
 
 #if defined(RGBLIGHT_ENABLE) && defined(RGBLIGHT_LAYERS)
-
-#include "quantum.h"
 
 #define BGKRGB_DEGREES_TO_INT(h)    (((h*255UL)/359UL))
 #define BGKRGB_PERCENT_TO_INT(s)    (((s*255UL)/100UL))
@@ -126,6 +130,5 @@ void bgkrgb_set_from_layers(layer_state_t state, uint8_t lowest_layer, uint8_t h
 void bgkrgb_set_from_highest_layer(layer_state_t state, uint8_t lowest_layer, uint8_t highest_layer);
 void bgkrgb_blink_layer(uint8_t blink_layer, uint8_t lowest_layer, uint8_t highest_layer);
 void bgkrgb_blink_highest_layer(layer_state_t state, uint8_t lowest_layer, uint8_t highest_layer);
-
 
 #endif /* RGB light and layers enabled */

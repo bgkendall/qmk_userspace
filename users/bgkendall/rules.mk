@@ -10,6 +10,11 @@ ifeq ($(strip $(RGBLIGHT_ENABLE)), yes)
     SRC += bgk_rgb.c
 endif
 
+ifeq ($(strip $(RGB_MATRIX_ENABLE)), yes)
+    $(info Enabling BGK RGB (mini))
+    SRC += bgk_rgb.c
+endif
+
 ifeq ($(strip $(BGK_CUSTOM_WS2812_ENABLE)), yes)
     $(info Enabling BGK WS2812)
     SRC += bgk_ws2812_driver_init.c bgk_ws2812_driver.c

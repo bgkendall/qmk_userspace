@@ -7,6 +7,7 @@
 #include "bgk_keycodes.h"
 #include "bgk_keycommands.h"
 #include "bgk_os_detect.h"
+#include "bgk_rgb.h"
 #include "keycodes.h"
 #include "users/bgkendall/private/texts.h"
 #ifdef BGK_SHIFTED_MOD_TAP_ENABLE
@@ -131,6 +132,25 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
                 {
                     tap_code16(G(S(KC_4)));
                 }
+                process = false;
+                break;
+            }
+            case QK_RGB_MATRIX_TOGGLE:
+            {
+#if defined(RGB_MATRIX_ENABLE)
+                bgkrgb_matrix_toggle();
+#endif
+                process = false;
+                break;
+            }
+            case QK_UNDERGLOW_TOGGLE:
+            {
+#if defined(RGBLIGHT_ENABLE)
+                rgblight_toggle();
+#endif
+#if defined(RGB_MATRIX_ENABLE) && !defined(RGB_MATRIX_DISABLE_SHARED_KEYCODES)
+                bgkrgb_matrix_toggle();
+#endif
                 process = false;
                 break;
             }
