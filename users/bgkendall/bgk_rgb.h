@@ -11,6 +11,9 @@
 #define HSV_VIVIDPINK           0, 224, 255
 #define HSV_ORANGERED           9, 255, 255
 
+#define RGB_VIVIDPINK         255,  31,  30
+#define RGB_ORANGERED         255,  54,   0
+
 #if defined(RGBLIGHT_ENABLE) && defined(RGBLIGHT_LAYERS)
 
 #include "quantum.h"
