@@ -8,16 +8,20 @@
 
 #pragma once
 
+#include "color.h"
+
 #define HSV_VIVIDPINK           0, 224, 255
 #define HSV_ORANGERED           9, 255, 255
 
 #define RGB_VIVIDPINK         255,  31,  30
 #define RGB_ORANGERED         255,  54,   0
 
+bool bgkrgb_is_colour(rgb_t rgb) { return !(rgb.r == 0 && rgb.g == 0 && rgb.b == 0); }
+
+
 #if defined(RGBLIGHT_ENABLE) && defined(RGBLIGHT_LAYERS)
 
 #include "quantum.h"
-
 
 #define BGKRGB_DEGREES_TO_INT(h)    (((h*255UL)/359UL))
 #define BGKRGB_PERCENT_TO_INT(s)    (((s*255UL)/100UL))
