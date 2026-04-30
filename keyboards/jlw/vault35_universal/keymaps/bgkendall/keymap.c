@@ -141,6 +141,15 @@ layer_state_t layer_state_set_kb(layer_state_t state)
 {
     if (is_layer_indicated(state))
     {
+        // TODO: Fix properly!
+        // This is a horrible hack to work around layers being momentarily
+        // activated. The global layer state may be reset back to 0 by the time
+        // rgb_matrix_indicators_advanced_kb() is called, which means that the
+        // matrix will be on, but rgb_matrix_indicators…() will not know to turn
+        // it off. The magic numbers are used because the global layer state
+        // normally used by rgb_matrix_indicators…() is not updated until
+        // *after* this function is called.
+        rgb_matrix_indicators_advanced_kb(127, 0);
         rgb_matrix_enable_noeeprom();
     }
     return layer_state_set_user(state);
@@ -219,7 +228,9 @@ print("Caps lock\n");
 print("Caps word\n");
         rgb_state = RGBS_CAPSWORD;
     }
-    else if (is_layer_indicated(layer_state))
+    else if (is_layer_indicated(layer_state) ||
+             // See layer_state_set_kb() above
+             (led_min == 127 && led_max == 0))
     {
 print("Layer\n");
         rgb_state = RGBS_LAYERS+get_highest_layer(layer_state);
