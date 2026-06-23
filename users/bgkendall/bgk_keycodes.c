@@ -8,7 +8,6 @@
 #include "bgk_keycommands.h"
 #include "bgk_os_detect.h"
 #include "bgk_rgb.h"
-#include "keycodes.h"
 #include "users/bgkendall/private/texts.h"
 #ifdef BGK_SHIFTED_MOD_TAP_ENABLE
 #   include "bgk_shifted_mod_tap.h"
@@ -31,10 +30,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
 {
     bool process = process_record_keymap(keycode, record);
 
+#ifdef KEY_OVERRIDE_ENABLE
     if (process)
     {
         process = process_key_override(keycode, record);
     }
+#endif
 
 #ifdef BGK_SHIFTED_MOD_TAP_ENABLE
     if (process)
