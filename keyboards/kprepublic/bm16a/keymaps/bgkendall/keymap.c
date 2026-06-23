@@ -55,7 +55,8 @@ const rgblight_segment_t* const PROGMEM bgk_rgb_layers[] = RGBLIGHT_LAYERS_LIST
 (
     [0] = bgkrgb_cyan_layer,
     [1] = bgkrgb_magenta_layer,
-    [2] = bgkrgb_gold_layer
+    [2] = bgkrgb_gold_layer,
+    [3] = bgkrgb_red_layer
 );
 
 void keyboard_post_init_kb(void)
@@ -84,7 +85,7 @@ bool process_record_kb(uint16_t keycode, keyrecord_t* record)
                 if (record->event.pressed)
                 {
                     // Increment dot mode:
-                    if ( (++dot_mode) > 2 ) { dot_mode = 0; }
+                    if ( (++dot_mode) > 3 ) { dot_mode = 0; }
                     rgblight_blink_layer(dot_mode, 250);
                 }
                 process = false;
@@ -100,6 +101,9 @@ bool process_record_kb(uint16_t keycode, keyrecord_t* record)
                         break;
                     case 2:
                         keycode = KC_DOT;
+                        break;
+                    case 3:
+                        keycode = KC_SPACE;
                         break;
                     default:
                         dot_mode = 0;
