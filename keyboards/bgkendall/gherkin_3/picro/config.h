@@ -3,5 +3,5 @@
 
 #pragma once
 
-#define RGBLIGHT_LAYER_KEY      {3,6}
+#define RGBLIGHT_LAYER_KEY      {2,6}
 #define WS2812_POWER_PIN        GP28
