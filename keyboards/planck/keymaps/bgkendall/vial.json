@@ -31,6 +31,11 @@
       "shortName": "×"
     },
     {
+      "name": "BK_UPDIR",
+      "title": "Parent Path",
+      "shortName": "../"
+    },
+    {
       "name": "BK_ELEFT",
       "title": "Encoder Cursor Left",
       "shortName": "Enc.\nLeft"

@@ -223,6 +223,16 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
                 process = false;
                 break;
             }
+            case BK_UPDIR:
+            {
+                // ../
+                //
+                tap_code(KC_DOT);
+                tap_code(KC_DOT);
+                tap_code(KC_SLASH);
+                process = false;
+                break;
+            }
             case BK_ELEFT:
                 // Encoder cursor left (down if flipped):
                 tap_code16(cursor_vertical ? KC_DOWN : KC_LEFT);
