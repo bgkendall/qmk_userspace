@@ -223,21 +223,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
                 process = false;
                 break;
             }
-            case BK_LOCK:
-            {
-                // Tap to lock current layer, tap again to return to default layer
-                // If the current default layer is 0, set the current highest layer as the default,
-                // otherwise reset the default layer to 0
-                // A simpler method would be to do `default_layer_set(layer_state)`,
-                // but this will not reset the default layer if, say, MO(n) is currently being held
-                //
-                default_layer_set
-                (
-                    1 << (get_highest_layer(default_layer_state) == 0 ? get_highest_layer(layer_state) : 0)
-                );
-                process = false;
-                break;
-            }
             case BK_ELEFT:
                 // Encoder cursor left (down if flipped):
                 tap_code16(cursor_vertical ? KC_DOWN : KC_LEFT);

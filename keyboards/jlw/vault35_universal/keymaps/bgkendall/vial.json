@@ -32,11 +32,6 @@
         "shortName": "×"
       },
       {
-        "name": "BK_LOCK",
-        "title": "Lock this layer",
-        "shortName": "Layer\nLock"
-      },
-      {
         "name": "BK_ELEFT",
         "title": "Encoder Cursor Left",
         "shortName": "Enc.\nLeft"
