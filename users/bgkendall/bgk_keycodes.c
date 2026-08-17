@@ -123,7 +123,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
 
         switch (keycode)
         {
-            case KC_PSCR:
+            case KC_PRINT_SCREEN:
             {
                 if (bgk_is_windows())
                 {
