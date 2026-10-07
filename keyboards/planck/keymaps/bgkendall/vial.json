@@ -67,8 +67,17 @@
     }
   ],
   "layouts": {
-    "labels": [["Layout", "MIT (1x2u)", "Grid (2x1u)", "2x2u", "3x3u"]],
+    "labels": [
+      ["Layout", "MIT (1x2u)", "Grid (2x1u)", "2x2u", "3x3u"],
+      "Encoder"
+    ],
     "keymap": [
+      [
+        {"c": "#444444", "t": "#ffffff", "w": 2, "d": true},
+        "\n\n\n1,0",
+        "0,0\n\n\n1,1\n\n\n\n\n\ne",
+        "0,1\n\n\n1,1\n\n\n\n\n\ne"
+      ],
       [
         {"c": "#aaaaaa"},
         "0,0",
