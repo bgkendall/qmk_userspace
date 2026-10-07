@@ -1,6 +1,9 @@
 {
     "keyboard_name": "Clearpad",
     "bootloader": "caterina",
+    "build": {
+        "lto": true
+    },
     "debounce": 5,
     "diode_direction": "COL2ROW",
     "features": {
@@ -13,13 +16,13 @@
         "console": false,
         "encoder": false,
         "extrakey": true,
-        "lto": true,
         "magic": false,
         "midi": false,
         "mousekey": true,
         "music": false,
         "nkro": false,
         "rgblight": true,
+        "rgb_matrix": false,
         "unicode": false
     },
     "matrix_pins": {
@@ -36,8 +39,9 @@
     },
     "processor": "atmega32u4",
     "usb": {
-        "device_ver": "0x0001",
+        "device_version": "1.0.0",
         "pid": "0x2320",
+        "max_power": 100
     },
     "layouts": {
         "LAYOUT": {
@@ -59,6 +63,7 @@
         "hue_steps": 10,
         "saturation_steps": 17,
         "brightness_steps": 17,
+        "max_brightness": 34,
         "animations": {
             "all": false,
             "alternating": true,
@@ -71,6 +76,13 @@
             "snake": true,
             "static_gradient": true,
             "twinkle": false
+        },
+        "layers": {
+            "enabled": true,
+            "blink": true
         }
+    },
+    "ws2812": {
+        "pin": "D3"
     }
 }

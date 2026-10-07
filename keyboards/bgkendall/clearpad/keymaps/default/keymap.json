@@ -9,7 +9,7 @@
                         "KC_UP",
             "KC_LEFT",  "KC_ENT",   "KC_RGHT",
                         "KC_DOWN",
-            "RESET"
+            "QK_BOOT"
         ],
         [
                                     "KC_TRNS",
