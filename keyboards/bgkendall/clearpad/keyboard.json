@@ -79,7 +79,8 @@
         },
         "layers": {
             "enabled": true,
-            "blink": true
+            "blink": true,
+            "max": 4
         }
     },
     "ws2812": {
