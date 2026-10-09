@@ -27,14 +27,14 @@
     },
     "matrix_pins": {
         "direct": [
-            [null, "F4"],
-            ["D0", "F5"],
-            [null, "F6"],
-            [null, "F7"],
-            [null, "B1"],
-            [null, null],
-            [null, "B2"],
-            [null, "B6"]
+            ["F4"],
+            ["F5"],
+            ["F6"],
+            ["F7"],
+            ["B1"],
+            ["B2"],
+            ["B6"],
+            ["D0"]
         ]
     },
     "processor": "atmega32u4",
@@ -46,14 +46,14 @@
     "layouts": {
         "LAYOUT": {
             "layout": [
-                {"label":"TOGUP", "matrix": [6, 1], "y":0, "x":3},
-                {"label":"TOGDN", "matrix": [7, 1], "y":1, "x":3},
-                {"label":"UP",    "matrix": [0, 1], "y":3, "x":1},
-                {"label":"LEFT",  "matrix": [1, 1], "y":4, "x":0},
-                {"label":"MID",   "matrix": [3, 1], "y":4, "x":1},
-                {"label":"RIGHT", "matrix": [2, 1], "y":4, "x":2},
-                {"label":"DOWN",  "matrix": [4, 1], "y":5, "x":1},
-                {"label":"RESET", "matrix": [1, 0], "y":5, "x":3}
+                {"label":"TOGUP", "matrix": [5, 0], "y":0, "x":3},
+                {"label":"TOGDN", "matrix": [6, 0], "y":1, "x":3},
+                {"label":"UP",    "matrix": [0, 0], "y":3, "x":1},
+                {"label":"LEFT",  "matrix": [1, 0], "y":4, "x":0},
+                {"label":"MID",   "matrix": [3, 0], "y":4, "x":1},
+                {"label":"RIGHT", "matrix": [2, 0], "y":4, "x":2},
+                {"label":"DOWN",  "matrix": [4, 0], "y":5, "x":1},
+                {"label":"RESET", "matrix": [7, 0], "y":5, "x":3}
             ]
         }
     },
