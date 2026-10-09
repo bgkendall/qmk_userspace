@@ -113,11 +113,10 @@ void bgkrgb_set_from_highest_layer(layer_state_t state, uint8_t lowest_layer, ui
 
 void bgkrgb_blink_layer(uint8_t blink_layer, uint8_t lowest_layer, uint8_t highest_layer)
 {
-    bgkrgb_set_all_layers(highest_layer+1, lowest_layer, highest_layer); // All RGB layers off
-
     if (blink_layer >= lowest_layer && blink_layer <= highest_layer)
     {
         rgblight_blink_layer(blink_layer, BGKRGB_BLINK_TIME);
+        rgblight_unblink_all_but_layer(blink_layer);
     }
 }
 
