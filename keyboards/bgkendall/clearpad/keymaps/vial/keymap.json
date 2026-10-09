@@ -5,38 +5,38 @@
     "layers": [
         [
                                     "TO(1)",
-                                    "TO(0)",
+                                    "TO(3)",
                         "KC_UP",
-            "KC_LEFT",  "KC_ENT",   "KC_RGHT",
+            "KC_LEFT",  "KC_0",     "KC_RGHT",
                         "KC_DOWN",
             "QK_BOOT"
         ],
         [
-                                    "KC_TRNS",
-                                    "KC_TRNS",
+                                    "TO(2)",
+                                    "TO(0)",
                         "KC_MS_U",
-            "KC_MS_L",  "KC_BTN1",  "KC_MS_R",
+            "KC_MS_L",  "KC_1",  "KC_MS_R",
                         "KC_MS_D",
             "KC_TRNS"
         ],
         [
+            "TO(3)",
+            "TO(1)",
             "KC_TRNS",
             "KC_TRNS",
-            "KC_TRNS",
-            "KC_TRNS",
-            "KC_TRNS",
+            "KC_2",
             "KC_TRNS",
             "KC_TRNS",
             "KC_TRNS"
         ],
         [
+            "TO(0)",
+            "TO(2)",
             "KC_TRNS",
             "KC_TRNS",
+            "KC_3",
             "KC_TRNS",
-            "KC_TRNS",
-            "KC_TRNS",
-            "KC_TRNS",
-            "KC_TRNS",
+            "QK_BOOT",
             "KC_TRNS"
         ]
     ]
