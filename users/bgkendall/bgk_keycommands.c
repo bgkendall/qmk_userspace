@@ -11,6 +11,7 @@
 #include "quantum.h"
 #include "bgk_keycodes.h"
 #include "bgk_os_detect.h"
+#include "users/bgkendall/private/texts.h"
 
 
 // Global variables and functions for Cmd+Tab via encoder or other non-standard mechanism.
@@ -117,9 +118,52 @@ layer_state_t layer_state_set_user(layer_state_t state)
 }
 
 
-/*****************************************************************************
- * THORN                                                                     *
- *****************************************************************************/
+// Other custom keys
+//
+bool bgkey_000(void)
+{
+    // Thousands (000) key
+    //
+    tap_code(KC_P0);
+    tap_code(KC_P0);
+    tap_code(KC_P0);
+
+    return false;
+}
+
+bool bgkey_bgk(void)
+{
+    const uint8_t modifiers = get_mods();
+    clear_mods();
+#ifndef NO_ACTION_ONESHOT
+    clear_oneshot_mods();
+#endif
+    send_keyboard_report();
+
+    if (modifiers & MOD_MASK_GUI)
+    {
+        SEND_STRING_DELAY(TEXT_STRING_3g, TAP_CODE_DELAY);
+    }
+    else if (modifiers & MOD_MASK_ALT)
+    {
+        SEND_STRING_DELAY(TEXT_STRING_3a, TAP_CODE_DELAY);
+    }
+    else if (modifiers & MOD_MASK_SHIFT)
+    {
+        SEND_STRING_DELAY(TEXT_STRING_3s, TAP_CODE_DELAY);
+    }
+    else if (modifiers & MOD_MASK_CTRL)
+    {
+        SEND_STRING_DELAY(TEXT_STRING_3c, TAP_CODE_DELAY);
+    }
+    else
+    {
+        SEND_STRING_DELAY(TEXT_STRING_3, TAP_CODE_DELAY);
+    }
+    set_mods(modifiers);
+
+    return false;
+}
 
 bool bgkey_thorn(void)
 {
@@ -169,6 +213,33 @@ bool bgkey_thorn(void)
             register_code(KC_RSFT);
         }
     }
+
+    return false;
+}
+
+bool bgkey_times(void)
+{
+    // Somewhat brittle multiplication sign (×) key
+    // Relies on only two Input Sources being enabled — the one in use and Unicode Hex Input
+    // May sometimes not switch to the Unicode source before sending the Unicode string, or
+    // may not switch back to the usual Input Source
+    //
+    tap_code16(C(KC_SPACE));                    // Switch to Unicode input (hopefully)
+    register_code(KC_RALT);                     // Hold down right alt
+    SEND_STRING_DELAY("00d7", TAP_CODE_DELAY);  // Send Unicode for multiplication sign
+    unregister_code(KC_RALT);                   // Release right alt
+    tap_code16(C(KC_SPACE));                    // Switch away from Unicode input
+
+    return false;
+}
+
+bool bgkey_updir(void)
+{
+    // ../
+    //
+    tap_code(KC_DOT);
+    tap_code(KC_DOT);
+    tap_code(KC_SLASH);
 
     return false;
 }

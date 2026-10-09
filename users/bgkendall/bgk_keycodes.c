@@ -8,7 +8,6 @@
 #include "bgk_keycommands.h"
 #include "bgk_os_detect.h"
 #include "bgk_rgb.h"
-#include "users/bgkendall/private/texts.h"
 #ifdef BGK_SHIFTED_MOD_TAP_ENABLE
 #   include "bgk_shifted_mod_tap.h"
 #endif
@@ -24,6 +23,92 @@
 __attribute__ ((weak)) bool process_record_keymap(uint16_t keycode, keyrecord_t* record)
 {
     return true;
+}
+
+
+// Certain complex key codes are often needed in a location where a Mod-Tap is
+// also desired and thus only a basic key code would normally be supported.
+// The following rarely used keys are overridden to solve this:
+//
+//  * Again (KC_AGAIN) -> Redo (Cmd+Shift+Z / Ctrl+Shift+Z on Windows)
+//  * Keypad Comma (KC_KP_COMMA) -> Curly close quote (Option-Shift-Right Bracket)
+//  * Calculator (KC_CALC) -> Thousands (000)
+//
+// These can each be disabled with the setting BGK_NO_<key>_OVERRIDE
+// E.g., `#define BGK_NO_KC_AGAIN_OVERRIDE`
+//
+bool override_basic_key(uint16_t keycode, keyrecord_t* record)
+{
+    bool process = true;
+
+    if (record->tap.count > 0 &&
+        (
+#ifndef BGK_NO_KC_AGAIN_OVERRIDE
+            (keycode & QK_BASIC_MAX) == KC_AGAIN ||
+#endif
+#ifndef BGK_NO_KC_KP_COMMA_OVERRIDE
+            (keycode & QK_BASIC_MAX) == KC_KP_COMMA ||
+#endif
+#ifndef BGK_NO_KC_CALC_OVERRIDE
+            (keycode & QK_BASIC_MAX) == KC_CALCULATOR ||
+#endif
+            0
+        )
+       )
+    {
+        uint16_t replacement = KC_NO;
+
+        switch (keycode & QK_BASIC_MAX)
+        {
+            case KC_AGAIN:
+            {
+                if (bgk_is_windows())
+                {
+                    replacement = C(S(KC_Z));
+                }
+                else
+                {
+                    replacement = G(S(KC_Z));
+                }
+                break;
+            }
+            case KC_KP_COMMA:
+            {
+                replacement = LSA(KC_RIGHT_BRACKET);
+                break;
+            }
+            case KC_CALCULATOR:
+            {
+                replacement = BK_000;
+                break;
+            }
+            default:
+                break;
+        }
+
+        if (replacement != KC_NO)
+        {
+            if (record->event.pressed)
+            {
+                if (replacement == BK_000)
+                {
+                    bgkey_000();
+                }
+                else
+                {
+                    register_code16(replacement);
+                }
+            }
+            else
+            {
+                unregister_code16(replacement);
+            }
+
+            process = false;
+        }
+    }
+
+    return process;
 }
 
 bool process_record_user(uint16_t keycode, keyrecord_t* record)
@@ -44,77 +129,9 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
     }
 #endif
 
-    if (process &&
-        record->tap.count > 0 &&
-        ((keycode & QK_BASIC_MAX) == KC_AGAIN
-#ifndef BGK_NO_KP_COMMA_OVERRIDE
-         || (keycode & QK_BASIC_MAX) == KC_KP_COMMA
-#endif
-#ifndef BGK_NO_KC_CALC_OVERRIDE
-         || (keycode & QK_BASIC_MAX) == KC_CALCULATOR
-#endif
-        )
-       )
+    if (process)
     {
-        uint16_t replacement = KC_NO;
-
-        switch (keycode & QK_BASIC_MAX)
-        {
-            case KC_AGAIN:
-            {
-                // On small boards, Z is a Mod-Tap with Shift, which makes “Redo”
-                // (usually Cmd+Shift+Z) awkward. Putting Cmd+Shift+Z on the first
-                // function layer (in Z's position) solves this. However, since this
-                // is also usually a Shift Mod-Tap, and thus only basic keys can be
-                // used, “Again” is used as a stand-in that is replaced here.
-                //
-                if (bgk_is_windows())
-                {
-                    replacement = C(S(KC_Z));
-                }
-                else
-                {
-                    replacement = G(S(KC_Z));
-                }
-                break;
-            }
-            case KC_KP_COMMA:
-            {
-                // Curly close single quote is often in a location where a
-                // Mod-Tap is also desirable. Override the rarely used basic
-                // key code Keypad Comma with Right Option-Shift-Right Bracket.
-                // This can be disabled with BGK_NO_KP_COMMA_OVERRIDE.
-                //
-                replacement = RSA(KC_RIGHT_BRACKET);
-                break;
-            }
-            case KC_CALCULATOR:
-            {
-                // The thousands shortcut is often in a location where a
-                // Mod-Tap is also desirable. Override the rarely used basic
-                // key code Calculator with BK_000.
-                // This can be disabled with BGK_NO_KC_CALC_OVERRIDE.
-                //
-                keycode = BK_000;
-                break;
-            }
-            default:
-                break;
-        }
-
-        if (replacement != KC_NO)
-        {
-            if (record->event.pressed)
-            {
-                register_code16(replacement);
-            }
-            else
-            {
-                unregister_code16(replacement);
-            }
-
-            process = false;
-        }
+        process = override_basic_key(keycode, record);
     }
 
     if (process && record->event.pressed)
@@ -157,45 +174,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
             }
             case BK_000:
             {
-                // Thousands (000) key
-                //
-                tap_code(KC_P0);
-                tap_code(KC_P0);
-                tap_code(KC_P0);
-                process = false;
-                break;
-            }
-            case BK_BGK:
-            {
-                const uint8_t modifiers = get_mods();
-                clear_mods();
-#ifndef NO_ACTION_ONESHOT
-                clear_oneshot_mods();
-#endif
-                send_keyboard_report();
-
-                if (modifiers & MOD_MASK_GUI)
-                {
-                    SEND_STRING_DELAY(TEXT_STRING_3g, TAP_CODE_DELAY);
-                }
-                else if (modifiers & MOD_MASK_ALT)
-                {
-                    SEND_STRING_DELAY(TEXT_STRING_3a, TAP_CODE_DELAY);
-                }
-                else if (modifiers & MOD_MASK_SHIFT)
-                {
-                    SEND_STRING_DELAY(TEXT_STRING_3s, TAP_CODE_DELAY);
-                }
-                else if (modifiers & MOD_MASK_CTRL)
-                {
-                    SEND_STRING_DELAY(TEXT_STRING_3c, TAP_CODE_DELAY);
-                }
-                else
-                {
-                    SEND_STRING_DELAY(TEXT_STRING_3, TAP_CODE_DELAY);
-                }
-                set_mods(modifiers);
-                process = false;
+                process = bgkey_000();
                 break;
             }
             case BK_APP_BACKWARD:
@@ -208,29 +187,25 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
                 process = bgkey_register_forward_app_switch();
                 break;
             }
+            case BK_BGK:
+            {
+                process = bgkey_bgk();
+                break;
+            }
             case BK_TIMES:
             {
-                // Somewhat brittle multiplication sign (×) key
-                // Relies on only two Input Sources being enabled — the one in use and Unicode Hex Input
-                // May sometimes not switch to the Unicode source before sending the Unicode string, or
-                // may not switch back to the usual Input Source
-                //
-                tap_code16(C(KC_SPACE));                    // Switch to Unicode input (hopefully)
-                register_code(KC_RALT);                     // Hold down right alt
-                SEND_STRING_DELAY("00d7", TAP_CODE_DELAY);  // Send Unicode for multiplication sign
-                unregister_code(KC_RALT);                   // Release right alt
-                tap_code16(C(KC_SPACE));                    // Switch away from Unicode input
-                process = false;
+                process = bgkey_times();
+                break;
+            }
+            case BK_THORN:
+            {
+                // Th
+                process = bgkey_thorn();
                 break;
             }
             case BK_UPDIR:
             {
-                // ../
-                //
-                tap_code(KC_DOT);
-                tap_code(KC_DOT);
-                tap_code(KC_SLASH);
-                process = false;
+                process = bgkey_updir();
                 break;
             }
             case BK_ELEFT:
@@ -257,10 +232,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record)
                 // Flip encoder cursor orientation:
                 cursor_vertical = !cursor_vertical;
                 process = false;
-                break;
-            case BK_THORN:
-                // Th
-                process = bgkey_thorn();
                 break;
             default:
                 break;

@@ -27,4 +27,8 @@ bool bgkey_unregister_forward_app_switch(void);
 bool bgkey_register_backward_app_switch(void);
 bool bgkey_unregister_backward_app_switch(void);
 
+bool bgkey_000(void);
+bool bgkey_bgk(void);
 bool bgkey_thorn(void);
+bool bgkey_times(void);
+bool bgkey_updir(void);
